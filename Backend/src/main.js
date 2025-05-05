@@ -2,6 +2,7 @@ import express from "express"
 import cors from "cors"
 import fileUpload from "express-fileupload";
 import authRoutes  from "./routes/auth.routes.js"
+import gastosComunesRoutes from "./routes/gastosComunes.routes.js"
 
 import {errorHandler} from "./middlewares/errors.middlewares.js"
 
@@ -23,6 +24,8 @@ app.use("/public", express.static(__dirname + "/public"));
 
 //Endpoints
 app.use("/api/v1/auth", authRoutes)
+app.use("/api/v1/gastos-comunes", gastosComunesRoutes)
+
 
 
 //Errors Handler

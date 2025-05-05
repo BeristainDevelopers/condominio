@@ -1,8 +1,8 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../database/database.js';
 
-export const Usuario = sequelize.define('Usuario', {
-    id_usuario: {
+export const Residente = sequelize.define('Residente', {
+    id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
@@ -25,11 +25,21 @@ export const Usuario = sequelize.define('Usuario', {
         allowNull: false,
         unique: true,
     },
-    password_hash: {
-        type: DataTypes.STRING(250),
+    casa:{
+        type: DataTypes.STRING(4),
         allowNull: false,
-    }
+    },
+    es_representante:{
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    },
+    activo:{
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
+    },
 }, {
-    tableName: 'usuarios',
+    tableName: 'residente',
     timestamps: true,
 });

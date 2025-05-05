@@ -1,3 +1,3 @@
-import { Usuario } from "./Usuario.model.js";
+import { Administrador } from "./Administradores.model.js";
 
 

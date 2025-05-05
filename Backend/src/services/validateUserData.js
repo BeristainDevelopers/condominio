@@ -1,6 +1,6 @@
 import { ValidationError } from "../errors/TypeError.js";
 import { isValidName, isValidEmail, isValidPassword } from "../utils/validators.js";
-import { Usuario } from "../models/Usuario.model.js";
+import { Administrador } from "../models/Administradores.model.js";
 
 export const validateUserData = (nombre, email, password) => {
 

@@ -1,17 +1,16 @@
 import { AuthenticationError, UnauthorizedError } from "../errors/TypeError.js";
 import logger from "../utils/logger.js";
 import { comparePassword, createToken, verifyToken } from "../services/auth.services.js";
-import { Usuario } from "../models/Usuario.model.js";
-import { Rol } from "../models/Rol.model.js"
-import { Empresa } from "../models/Empresa.model.js"
+import { Administrador } from "../models/Administradores.model.js";
+
 
 
 export const issueTokenMiddleware = async(req, res, next) =>{
     try {
         const {email, password } = req.body
 
-        let user = await Usuario.findOne({
-            attributes: ["id_usuario", "nombre", "email", "id_rol", "id_empresa", "password_hash" ],
+        let user = await Administrador.findOne({
+            attributes: ["id", "nombre", "email", "password_hash" ],
             include: [
                 {
                     model: Rol,

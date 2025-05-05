@@ -1,4 +1,4 @@
-import { Usuario } from "../models/Usuario.model.js";
+import { Administrador } from "../models/Administradores.model.js";
 import { createToken, hashPassword } from "../services/auth.services.js";
 import { validateUserData, userIfExist, userNotExist } from "../services/validateUserData.js";
 import { normalizeEmail } from "../utils/normalize.js";
@@ -16,7 +16,7 @@ export const createUser = async (req, res, next) => {
 
         const hash = hashPassword(password);
 
-        await Usuario.create({
+        await Administrador.create({
             nombre,
             apellido,
             rut,
@@ -58,7 +58,7 @@ export const forgotPassword = async (req, res, next) => {
         //Verifica si el usuario no existe en la base de datos
         await userNotExist(email);
 
-        const user = await Usuario.findOne({ raw: true, where: { email } });
+        const user = await Administrador.findOne({ raw: true, where: { email } });
 
         const token = createToken(email, "30m");
 
@@ -84,7 +84,7 @@ export const changePassword = async (req, res, next) => {
         const { email, password } = req.body;
 
         const hash = hashPassword(password);
-        await Usuario.update(
+        await Administrador.update(
             {
                 password_hash: hash,
             },
