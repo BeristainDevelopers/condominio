@@ -3,9 +3,18 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setAuthFromStorage } from "./store/authSlice";
 import { ConfirmAlertProvider } from "./context/ConfirmAlertProvider";
+
+/* Pages */
 import { LoginPage } from "./pages/AuthPages/Login/LoginPage";
 import { RecoverPasswordPage } from "./pages/AuthPages/RecoverPassword/RecoverPasswordPage";
 import { UpdatePasswordPage } from "./pages/AuthPages/updatePassword/UpdatePasswordPage";
+import { GastosComunesPage } from "./pages/GastosComunes/GastosComunesPage";
+import { HomePageLayouts } from "./layouts/HomePageLayouts";
+import { HomePage } from "./pages/Home/HomePage";
+import { AnunciosPage } from "./pages/Anuncios/AnunciosPage";
+import { ResidentesPage } from "./pages/Residentes/ResidentesPage";
+import { DocumentosPage } from "./pages/Documentos/DocumentosPage";
+import { AdministradorPage } from "./pages/Administrador/AdministradorPage";
 
 function App() {
     const dispatch = useDispatch();
@@ -21,6 +30,15 @@ function App() {
                     <Route path="/" element={<LoginPage />} />
                     <Route path="/recover-password" element={<RecoverPasswordPage />} />
                     <Route path="/update-password" element={<UpdatePasswordPage />} />
+
+                    {/* Home Routes */}
+                    <Route path="/home" element={<HomePageLayouts> <HomePage /> </HomePageLayouts> } />
+                    <Route path="/gastos-comunes" element={<HomePageLayouts> <GastosComunesPage /> </HomePageLayouts>} />
+                    <Route path="/anuncios" element={<HomePageLayouts> <AnunciosPage /> </HomePageLayouts>} />
+                    <Route path="/residentes" element={<HomePageLayouts> <ResidentesPage /> </HomePageLayouts>} />
+                    <Route path="/documentos" element={<HomePageLayouts> <DocumentosPage /> </HomePageLayouts>} />
+                    <Route path="/administrador" element={<HomePageLayouts> <AdministradorPage /> </HomePageLayouts>} />
+
                 </Routes>
             </ConfirmAlertProvider>
         </BrowserRouter>
