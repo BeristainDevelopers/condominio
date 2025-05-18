@@ -8,7 +8,7 @@ export const GastoComun = sequelize.define("GastoComun",{
         primaryKey: true,
     },
     casa: {
-        type: DataTypes.STRING(10),
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     mes: {

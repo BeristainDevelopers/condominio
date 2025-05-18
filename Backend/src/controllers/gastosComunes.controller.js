@@ -3,32 +3,75 @@ import { generarPDF } from "../services/generarPDF.js";
 import { getCurrentDirectory } from "../utils/path.js";
 import * as path from "path";
 import { fileURLToPath } from "url";
+import { Casas } from "../models/Casas.model.js";
 
 const __dirname = getCurrentDirectory(fileURLToPath(import.meta.url));
 
 export const generarGastosComunes = async (req, res, next) => {
     try {
-        
-        const datos = {
-            fecha_informe: "18-09-2023", 
-            casa: "Casa J" ,
-            mes_gasto: "Septiembre",
-            gastos: [
-                { nombre: "Gasto 1", valor: 1000 },
-                { nombre: "Gasto 2", valor: 2000 },
-                { nombre: "Gasto 3", valor: 3000 },
-            ] , 
-            total:"6000" ,
-            fecha_pago_limite: "30-09-2023" ,
-            mensaje_importante: "Este es un mensaje importante para la comunidad." ,
+
+        const { fondo_reserva, gasto_comun, gastos_extras } = req.body;
+        let extrasParseados = [];
+
+        extrasParseados = JSON.parse(gastos_extras);
+
+        const casas = await Casas.findAll();
+
+        const resumenFinal = casas.map((casa) => {
+            const gastosParaCasa = extrasParseados
+                .filter((gasto) => gasto.casas.includes(casa.id))
+                .map((gasto) => ({
+                    nombre: gasto.nombre,
+                    monto: gasto.monto,
+                    fecha: gasto.fecha,
+                }));
+            return {
+                casa_id: casa.id,
+                casa: casa.nombre,
+                gasto_comun: Number(gasto_comun),
+                fondo_reserva: Number(fondo_reserva),
+                gastos_extras: gastosParaCasa,
+            };
+        });
+
+        for (const casa of resumenFinal) {
+            const datos = {
+                fecha_informe: "22/10/2025",
+                casa: casa.casa,
+                mes_gasto: "Enero",
+                gastos: [
+                    {
+                        nombre: "Fondo Reserva",
+                        valor: casa.fondo_reserva,
+                    },
+                    {
+                        nombre: "Gasto Comun",
+                        valor: casa.gasto_comun,
+                    },
+                    ...casa.gastos_extras.map((extras) => ({
+                        nombre: extras.nombre,
+                        valor: extras.monto,
+                    })),
+                ],
+                total:
+                    Number(casa.gasto_comun) +
+                    Number(casa.fondo_reserva) +
+                    casa.gastos_extras.reduce(
+                        (acc, g) => acc + Number(g.monto),
+                        0
+                    ),
+                fecha_pago_limite: "25/11/2025",
+                mensaje_importante: "Recuerden pagar a tiempo",
+            };
+
+            const html = generarTemplateGastoComunPDF(datos);
+            const rutaRelativa = path.join("upload", `${datos.casa}.pdf`);
+            const rutaAbsoluta = path.join(__dirname, "../", rutaRelativa);
+
+            await generarPDF(html, rutaAbsoluta);
+            
+
         }
-
-        const html = generarTemplateGastoComunPDF(datos);
-
-        const rutaRelativa = path.join("upload", `${datos.casa}.pdf`);
-        const rutaAbsoluta = path.join(__dirname, "../", rutaRelativa);
-
-        await generarPDF(html, rutaAbsoluta);
 
         return res.status(201).json({
             code: 201,
@@ -38,4 +81,19 @@ export const generarGastosComunes = async (req, res, next) => {
         console.error("Error al crear gasto común:", error);
         next(error);
     }
-}
+};
+
+export const getAllCasas = async (req, res, next) => {
+    try {
+        const casas = await Casas.findAll();
+
+        return res.status(200).json({
+            code: 200,
+            message: "Casas obtenidas exitosamente",
+            data: casas,
+        });
+    } catch (error) {
+        console.error("Error al crear gasto común:", error);
+        next(error);
+    }
+};

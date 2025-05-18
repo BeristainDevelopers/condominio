@@ -25,8 +25,8 @@ export const Residente = sequelize.define('Residente', {
         allowNull: false,
         unique: true,
     },
-    casa:{
-        type: DataTypes.STRING(4),
+    id_casa:{
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     es_representante:{
@@ -42,4 +42,6 @@ export const Residente = sequelize.define('Residente', {
 }, {
     tableName: 'residente',
     timestamps: true,
+    paranoid: true,
+    deletedAt: "deletedAt"
 });

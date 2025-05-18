@@ -1,11 +1,18 @@
+import { DataTypes } from "sequelize";
+import { sequelize } from "../database/database.js";
+
 export const Administracion = sequelize.define("Administracion", {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },
-    nombre: {
-        type: DataTypes.STRING(255),
+    id_residente: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    cargo: {
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     inicio: {
