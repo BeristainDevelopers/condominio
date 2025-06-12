@@ -1,6 +1,9 @@
 import { useState, useMemo } from "react";
 import Select from "react-select";
 
+// Icons
+import { MdOutlineDelete } from "react-icons/md";
+
 export const GastosExtras = ({ volver, todasLasCasas, gastoComun, fondoReserva }) => {
     
     const [nombre, setNombre] = useState("");
@@ -158,7 +161,7 @@ export const GastosExtras = ({ volver, todasLasCasas, gastoComun, fondoReserva }
 
             <button
                 onClick={handleAgregar}
-                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800 transition"
+                className="bg-green-600 text-white px-4 py-2 rounded transition-colors duration-300 cursor-pointer hover:bg-green-800"
             >
                 Agregar gasto
             </button>
@@ -182,7 +185,7 @@ export const GastosExtras = ({ volver, todasLasCasas, gastoComun, fondoReserva }
                                 <div>
                                     <strong>{gasto.nombre}</strong> - $
                                     {gasto.monto.toLocaleString("es-CL")} →
-                                    Casas:{" "}
+                                    Casa(as):{" "}
                                     {gasto.casas
                                         .map((id) => {
                                             const casa = todasLasCasas.find(
@@ -193,7 +196,7 @@ export const GastosExtras = ({ volver, todasLasCasas, gastoComun, fondoReserva }
                                         .join(", ")}
                                 </div>
                                 <button
-                                    className="text-red-600 hover:text-red-800 ml-4"
+                                    className="text-red-600 transition-colors duration-300 cursor-pointer font-semibold hover:text-red-800 ml-4"
                                     onClick={() => {
                                         const nuevosGastos = gastos.filter(
                                             (_, i) => i !== index
@@ -201,7 +204,7 @@ export const GastosExtras = ({ volver, todasLasCasas, gastoComun, fondoReserva }
                                         setGastos(nuevosGastos);
                                     }}
                                 >
-                                    Eliminar
+                                    <MdOutlineDelete size={24} className="inline-block mb-1 mr-1" />
                                 </button>
                             </li>
                         ))}
@@ -212,14 +215,14 @@ export const GastosExtras = ({ volver, todasLasCasas, gastoComun, fondoReserva }
             <div className="flex justify-between mt-6">
                 <button
                     onClick={volver}
-                    className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+                    className="bg-gray-300 text-gray-800 px-4 py-2 rounded transition-colors duration-300 cursor-pointer hover:bg-gray-400"
                 >
                     Volver
                 </button>
 
                 <button
                     onClick={handleClick}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800"
+                    className="bg-indigo-600 text-white px-4 py-2 rounded transition-colors duration-300 cursor-pointer hover:bg-indigo-800"
                 >
                     Finalizar
                 </button>

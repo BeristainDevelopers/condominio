@@ -15,9 +15,9 @@ export const EmailSentNotification = ({ handleReEmailSent }) => {
             <h4 className=" mb-4 text-center">
                 Hemos enviado un correo electrónico al correo <span className="font-bold">{email}</span> con un un enlace para reestablecer tu contraseña
             </h4>
-            <div className="text-sm text-gray-500 text-center mb-4">
-                    <span className="text-red-500">¿No has recibido ningún correo electrónico?</span> 
-                    <span onClick={() => handleReEmailSent(1)} className="text-teal-500 hover:text-[#10644C] ms-1 cursor-pointer">Reenviar correo electrónico</span>
+            <div className="text-gray-500 text-center mb-4">
+                    <span className="text-red-600 font-semibold">¿No has recibido ningún correo electrónico?</span> 
+                    <span onClick={() => handleReEmailSent(1)} className="text-indigo-600 hover:text-indigo-800 ms-1 font-semibold cursor-pointer">Reenviar correo electrónico</span>
                 </div>
         </div>
     );

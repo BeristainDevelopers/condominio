@@ -2,7 +2,6 @@ import { useState } from "react"
 
 export const GastosFijos = ({ siguiente, setFondoReserva, setGastoComun, fondoReserva, gastoComun }) => {
   
-
   const handleSiguiente = () => {
     if (!gastoComun || !fondoReserva) {
       alert("Por favor, completa ambos campos.")
@@ -44,11 +43,11 @@ export const GastosFijos = ({ siguiente, setFondoReserva, setGastoComun, fondoRe
       <div className="flex justify-end">
         <button
           onClick={handleSiguiente}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800 transition"
+          className="bg-indigo-600 text-white px-4 py-2 rounded transition-colors duration-300 cursor-pointer hover:bg-indigo-800"
         >
           Siguiente
         </button>
       </div>
     </div>
   )
-}
+};

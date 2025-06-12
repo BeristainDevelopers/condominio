@@ -91,7 +91,7 @@ export const ChangePassword = () => {
                             value={formPassword.password}
                             onChange={handleChange}
                             onFocus={() => setStrongBar(true)}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-[#10644C]"
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-indigo-600"
                             required
                         />
                         {showPassword ? (
@@ -118,7 +118,7 @@ export const ChangePassword = () => {
                             id="repeatPassword"
                             value={formPassword.repeatPassword}
                             onChange={handleChange}
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-[#10644C]"
+                            className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-indigo-600"
                             required
                         />
                         {showRepeatPassword ? (
@@ -140,7 +140,7 @@ export const ChangePassword = () => {
                     } </span>}
                 <button
                     type="submit"
-                    className="w-full bg-[#10644C] hover:bg-teal-600 text-white font-bold py-2 mt-6 rounded flex items-center justify-center"
+                    className="w-full bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 mt-6 rounded flex items-center justify-center transition-colors duration-300 cursor-pointer"
                     disabled={isLoading}
                 >
                     {isLoading ? (

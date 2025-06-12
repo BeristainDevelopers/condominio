@@ -1,12 +1,10 @@
-
-
+// Components
+import { Dashboard } from "./components/Dashboard"
 
 export const HomePage = () => {
     return (
-        <div>
-
-                <h1>HOMEPAGE</h1>
-
-        </div>
+        <>
+            <Dashboard />
+        </>
     )
-}
+};

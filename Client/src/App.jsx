@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { setAuthFromStorage } from "./store/authSlice";
 import { ConfirmAlertProvider } from "./context/ConfirmAlertProvider";
 
-/* Pages */
+// Pages
 import { LoginPage } from "./pages/AuthPages/Login/LoginPage";
 import { RecoverPasswordPage } from "./pages/AuthPages/RecoverPassword/RecoverPasswordPage";
 import { UpdatePasswordPage } from "./pages/AuthPages/updatePassword/UpdatePasswordPage";
@@ -15,6 +15,10 @@ import { AnunciosPage } from "./pages/Anuncios/AnunciosPage";
 import { ResidentesPage } from "./pages/Residentes/ResidentesPage";
 import { DocumentosPage } from "./pages/Documentos/DocumentosPage";
 import { AdministradorPage } from "./pages/Administrador/AdministradorPage";
+import { PerfilResidentePage } from "./pages/Residentes/PerfilResidente/PerfilResidentePage";
+
+// Components
+import { NotFound } from "./components/NotFound";
 
 function App() {
     const dispatch = useDispatch();
@@ -38,6 +42,10 @@ function App() {
                     <Route path="/residentes" element={<HomePageLayouts> <ResidentesPage /> </HomePageLayouts>} />
                     <Route path="/documentos" element={<HomePageLayouts> <DocumentosPage /> </HomePageLayouts>} />
                     <Route path="/administrador" element={<HomePageLayouts> <AdministradorPage /> </HomePageLayouts>} />
+                    <Route path="/residentes/perfil" element={<HomePageLayouts> <PerfilResidentePage /> </HomePageLayouts>} />
+
+                    {/* Not Found */}
+                    <Route path="*" element={<NotFound />} />
 
                 </Routes>
             </ConfirmAlertProvider>

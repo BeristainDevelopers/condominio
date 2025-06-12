@@ -2,13 +2,14 @@ import { useState} from "react";
 import { fetchHook } from "../../../../hooks/fetchHook";
 import { useNavigate, Link } from "react-router-dom"; 
 import PulseLoader from "react-spinners/PulseLoader";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { MdEmail } from "react-icons/md";
 import { validarEmail } from "../../../../utils/validators";
 import { useSnackbar } from "notistack";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../../../store/authSlice";
 
+// Icons
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
 
 export const LoginForm = () => {
     const { enqueueSnackbar } = useSnackbar();
@@ -63,7 +64,6 @@ export const LoginForm = () => {
             console.log(error);
         }
     };
-    
 
     return (
         <div className="bg-white p-8 rounded-lg shadow-md w-80 md:w-96">
@@ -117,7 +117,7 @@ export const LoginForm = () => {
                 </div>
                 <button
                     type="submit"
-                    className="w-full bg-[#10644C] hover:bg-teal-600 text-white font-bold py-2 rounded flex items-center justify-center"
+                    className="w-full bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 rounded flex items-center justify-center transition-colors duration-300 cursor-pointer"
                     disabled={isLoading}
                 >
                     {isLoading ? (
@@ -131,7 +131,7 @@ export const LoginForm = () => {
                 <p className="text-gray-600">
                     ¿Has perdido tu contraseña? 
                     <Link to="/recover-password" 
-                        className={`text-teal-500 hover:text-[#10644C] ms-1 ${isLoading ? "pointer-events-none text-gray-400" : ""}`}> 
+                        className={`text-indigo-500 font-semibold hover:text-indigo-800 ms-1 ${isLoading ? "pointer-events-none text-gray-400" : ""}`}> 
                         Recuperar contraseña
                         </Link>
                 </p>

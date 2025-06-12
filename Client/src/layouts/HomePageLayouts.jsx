@@ -1,5 +1,5 @@
-
 //Components
+import { Footer } from "../components/Footer"
 import { Navbar } from "../components/Navbar"
 
 export const HomePageLayouts = ({children}) => {
@@ -11,9 +11,14 @@ export const HomePageLayouts = ({children}) => {
             </header>
 
             {/* Body */}
-            <main className="bg-gray-100 min-h-[calc(100vh-96px)] p-4">
+            <main className="bg-gray-100 min-h-[calc(100vh-132px)] p-4">
                 {children}
             </main>
+
+            {/* Footer */}
+            <div>
+                <Footer />
+            </div>
         </div>
     )
-}
+};

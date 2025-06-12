@@ -1,7 +1,10 @@
-
+// Components
+import { FormularioAnuncio } from "./components/FormularioAnuncio"
 
 export const AnunciosPage = () => {
     return (
-        <div>AnunciosPage</div>
+        <>
+            <FormularioAnuncio />
+        </>
     )
-}
+};

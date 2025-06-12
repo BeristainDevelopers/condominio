@@ -1,7 +1,10 @@
-
+//Components
+import { ListaResidentes } from "./components/ListaResidentes";
 
 export const ResidentesPage = () => {
     return (
-        <div>ResidentesPage</div>
+        <>
+            <ListaResidentes />
+        </>
     )
-}
+};
