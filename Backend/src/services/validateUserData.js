@@ -26,7 +26,7 @@ export const validateUserData = (nombre, email, password) => {
 export const userIfExist = async (email, rut) => {
     
     if (email) {
-        const userByEmail = await Usuario.findOne({
+        const userByEmail = await Administrador.findOne({
             where: { email }
         });
         if (userByEmail) {
@@ -36,7 +36,7 @@ export const userIfExist = async (email, rut) => {
         }
     }
     if (rut) {
-        const userByRut = await Usuario.findOne({
+        const userByRut = await Administrador.findOne({
             where: { rut }
         });
         if (userByRut) {
@@ -50,7 +50,7 @@ export const userIfExist = async (email, rut) => {
 export const userNotExist = async (email) => {
     
     if (email) {
-        const userByEmail = await Usuario.findOne({
+        const userByEmail = await Administrador.findOne({
             where: { email }
         });
         if (!userByEmail) {

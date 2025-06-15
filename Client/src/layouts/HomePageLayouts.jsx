@@ -1,8 +1,9 @@
 //Components
+import { Outlet } from "react-router-dom";
 import { Footer } from "../components/Footer"
 import { Navbar } from "../components/Navbar"
 
-export const HomePageLayouts = ({children}) => {
+export const HomePageLayouts = () => {
     return (
         <div>
             {/* NavBar */}
@@ -12,7 +13,7 @@ export const HomePageLayouts = ({children}) => {
 
             {/* Body */}
             <main className="bg-gray-100 min-h-[calc(100vh-132px)] p-4">
-                {children}
+                <Outlet />
             </main>
 
             {/* Footer */}

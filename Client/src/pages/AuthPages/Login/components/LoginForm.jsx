@@ -1,11 +1,10 @@
 import { useState} from "react";
-import { fetchHook } from "../../../../hooks/fetchHook";
 import { useNavigate, Link } from "react-router-dom"; 
 import PulseLoader from "react-spinners/PulseLoader";
 import { validarEmail } from "../../../../utils/validators";
 import { useSnackbar } from "notistack";
 import { useDispatch } from "react-redux";
-import { loginSuccess } from "../../../../store/authSlice";
+import { fetchUsuario } from "../../../../store/authThunks";
 
 // Icons
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -49,9 +48,22 @@ export const LoginForm = () => {
         
             setIsLoading(true);
 
-            const data = await fetchHook("http://localhost:3000/api/v1/auth/login", "POST", formUser);
+            const formData = new FormData()
+
+            formData.append("email", formUser.email)
+            formData.append("password", formUser.password)
+
+            const requestOptions = {    
+                method: "POST",
+                body: formData,
+                credentials: "include"
+            }
+
+            const response = await fetch("http://localhost:3000/api/v1/auth/login", requestOptions);
+            const data = await response.json()
+            
             if (data.code === 200) {
-                dispatch(loginSuccess(data.token));
+                dispatch(fetchUsuario());
                 enqueueSnackbar("Sesión iniciada correctamente", { variant: "success" });
                 navigate("/"); 
             } else {

@@ -10,17 +10,6 @@ export const issueTokenMiddleware = async(req, res, next) =>{
         const {email, password } = req.body
 
         let user = await Administrador.findOne({
-            attributes: ["id", "nombre", "email", "password_hash" ],
-            include: [
-                {
-                    model: Rol,
-                    as: "roles"
-                },
-                {
-                    model: Empresa,
-                    as: "empresa"
-                }
-            ],
             where:{
                 email
             }
@@ -31,11 +20,9 @@ export const issueTokenMiddleware = async(req, res, next) =>{
         }
         
         const userMap = {
-            id_usuario: user.id_usuario,
+            id: user.id,
             nombre: user.nombre,
             email: user.email,
-            rol: user.roles.nombre,
-            empresa: user.empresa.nombre
         }
 
         const validatePassword = await comparePassword(password, user.password_hash)
@@ -56,30 +43,26 @@ export const issueTokenMiddleware = async(req, res, next) =>{
     } 
 }
 
-export const verifyTokenMiddleware = async(req, res, next) =>{
-
+export const verifyTokenMiddleware = async (req, res, next) => {
     try {
-        let {authorization} = req.headers
-        let tokenFromQuery = req.query.token
-        let token = null
+        const tokenFromHeader = req.headers.authorization?.split(" ")[1];
+        const tokenFromQuery = req.query.token;
+        const tokenFromBody = req.body.token;
+        const tokenFromCookie = req.cookies.token;
 
-        if(authorization && authorization.startsWith('Bearer ')){
-            token = authorization.split(" ")[1] 
-        }else if(tokenFromQuery){
-            token = tokenFromQuery
-        }else{
-            throw new AuthenticationError("Token no proporcionado")
+        const token = tokenFromHeader || tokenFromQuery || tokenFromCookie || tokenFromBody
+
+        if (!token) {
+            throw new AuthenticationError("Token no proporcionado");
         }
 
-
         const decoded = await verifyToken(token);
-
-        req.user = decoded.data
-        next()
-        
+        req.user = decoded;
+        req.token = token;
+        next();
     } catch (error) {
-        console.log(error)
-        logger.error("Ha ocurrido un error en authMiddleware Middleware", error)
+        console.log(error);
+        logger.error("Ha ocurrido un error en authMiddleware Middleware", error);
         next(error);
     }
-}
+};

@@ -9,11 +9,13 @@ import { GastoComun } from "./GastosComunes.model.js";
 Casas.hasMany(Residente, {
   foreignKey: "id_casa",
   sourceKey: "id",
+  as: "casas_residente"
 })
 
 Residente.belongsTo(Casas, {
   foreignKey: "id_casa",
   targetKey: "id",
+  as: "residente_casa"
 })
 
 // Casas -> GastoComun

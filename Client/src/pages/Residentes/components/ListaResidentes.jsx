@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -9,55 +9,16 @@ import { Spinner } from "../../../components/ui/Spinner";
 // Icons
 import { MdPerson, MdEmail, MdHouse, MdVerifiedUser, MdVisibility } from "react-icons/md";
 
-const residentes = [
-    {
-        nombre: "Felipe",
-        apellido: "Lagos",
-        rut: "10000000-K",
-        email: "felipe.lagos@condominio.cl",
-        id_casa: 1,
-        es_representante: true,
-        activo: true,
-    },
-    {
-        nombre: "María",
-        apellido: "Pérez",
-        rut: "12000000-5",
-        email: "maria.perez@condominio.cl",
-        id_casa: 2,
-        es_representante: false,
-        activo: true,
-    },
-    {
-        nombre: "Juan",
-        apellido: "Torres",
-        rut: "13000000-2",
-        email: "juan.torres@condominio.cl",
-        id_casa: 3,
-        es_representante: true,
-        activo: false,
-    },
-    // Duplica datos para simular más registros
-    ...Array.from({ length: 29 }, (_, i) => ({
-        nombre: `Residente ${i + 1}`,
-        apellido: `Apellido ${i + 1}`,
-        rut: `10${i + 1000}-K`,
-        email: `residente${i + 1}@condominio.cl`,
-        id_casa: i+ 1,
-        es_representante: i % 2 === 0,
-        activo: i % 3 !== 0,
-    })),
-];
-
 export const ListaResidentes = () => {
     const [currentPage, setCurrentPage] = useState(1);
+    const [residentes, setResidentes] = useState([]);
     const [filtroCasa, setFiltroCasa] = useState("all");
     const [loading, setLoading] = useState(true);
 
     const residentesFiltrados =
         filtroCasa === "all"
         ? residentes
-        : residentes.filter((r) => r.id_casa.toString() === filtroCasa);
+        : residentes.filter((r) => r.casa.toString() === filtroCasa);
 
     const residentesPorPagina = 16;
     const totalPaginas = Math.ceil(residentesFiltrados.length / residentesPorPagina);
@@ -73,7 +34,29 @@ export const ListaResidentes = () => {
         }
     };
 
-    /* if (loading) return <Spinner /> */
+    useEffect(() => {
+        const getAllResidentes = async() =>{
+            try {
+                const URL =
+                import.meta.env.VITE_APP_MODE === "desarrollo"
+                    ? import.meta.env.VITE_URL_DESARROLLO
+                    : import.meta.env.VITE_URL_PRODUCCION;
+
+            const response = await fetch(`${URL}/api/v1/residentes/get-all-residentes`, {credentials:"include"})
+            const data = await response.json()
+            setResidentes(data.data)
+            setLoading(false);
+            } catch (error) {
+                console.log(error);  
+            }
+        }
+        getAllResidentes()
+    
+    }, [])
+    
+
+
+    if (loading) return <Spinner />
 
     return (
         <>
@@ -97,9 +80,9 @@ export const ListaResidentes = () => {
                         }}
                         >
                             <option value="all">Todas</option>
-                            {[...new Set(residentes.map((r) => r.id_casa))].map((casa) => (
+                            {[...new Set(residentes.map((r) => r.casa))].map((casa) => (
                                 <option key={casa} value={casa}>
-                                Casa #{casa}
+                                Casa {casa}
                                 </option>
                             ))}
                         </select>
@@ -120,12 +103,12 @@ export const ListaResidentes = () => {
                             </thead>
                             <tbody className="divide-y divide-gray-200 font-semibold">
                                 {residentesPagina.map((residente, index) => (
-                                <tr key={index} className="hover:bg-gray-100 transition-color duration-200">
+                                <tr key={residente.id} className="hover:bg-gray-100 transition-color duration-200">
                                     <td className="px-4 py-3">
                                         {residente.nombre} {residente.apellido}
                                         <div className="text-xs text-gray-500">{residente.rut}</div>
                                     </td>
-                                    <td className="px-4 py-3">#{residente.id_casa}</td>
+                                    <td className="px-4 py-3">{residente.casa}</td>
                                     <td className="px-4 py-3 text-blue-600 hover:underline">
                                         <a href={`mailto:${residente.email}`}>{residente.email}</a>
                                     </td>
@@ -140,7 +123,7 @@ export const ListaResidentes = () => {
                                         </span>
                                     </td>
                                     <td className="px-4 py-3">
-                                        <Link to="/residentes/perfil" className="text-indigo-600 hover:underline flex items-center justify-center gap-1 mx-auto cursor-pointer">
+                                        <Link to={`/residentes/perfil/${residente.id}`} className="text-indigo-600 hover:underline flex items-center justify-center gap-1 mx-auto cursor-pointer">
                                             <MdVisibility />
                                             Ver perfil
                                         </Link>

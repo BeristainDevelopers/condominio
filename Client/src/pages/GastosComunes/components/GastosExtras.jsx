@@ -71,6 +71,7 @@ export const GastosExtras = ({ volver, todasLasCasas, gastoComun, fondoReserva }
                     : import.meta.env.VITE_URL_PRODUCCION;
 
             const response = await fetch(`${URL}/api/v1/gastos-comunes/generar-gasto-comun`, requestOptions)
+            const data = await response.json()
 
         } catch (error) {
             console.log(error);

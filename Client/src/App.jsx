@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setAuthFromStorage } from "./store/authSlice";
+import { fetchUsuario } from "./store/authThunks";
 import { ConfirmAlertProvider } from "./context/ConfirmAlertProvider";
 
 // Pages
@@ -16,33 +16,39 @@ import { ResidentesPage } from "./pages/Residentes/ResidentesPage";
 import { DocumentosPage } from "./pages/Documentos/DocumentosPage";
 import { AdministradorPage } from "./pages/Administrador/AdministradorPage";
 import { PerfilResidentePage } from "./pages/Residentes/PerfilResidente/PerfilResidentePage";
+import { ProtectedRoute } from "./secure/ProtectedRoutes";
 
 // Components
 import { NotFound } from "./components/NotFound";
 
 function App() {
+    
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setAuthFromStorage());
-    }, []);
+        dispatch(fetchUsuario())
+    }, [])
 
     return (
         <BrowserRouter>
             <ConfirmAlertProvider>
                 <Routes>
                     {/* Auth Routes */}
-                    <Route path="/" element={<LoginPage />} />
                     <Route path="/recover-password" element={<RecoverPasswordPage />} />
                     <Route path="/update-password" element={<UpdatePasswordPage />} />
+                    <Route path="/login" element={<LoginPage />} />
 
                     {/* Home Routes */}
-                    <Route path="/home" element={<HomePageLayouts> <HomePage /> </HomePageLayouts> } />
-                    <Route path="/gastos-comunes" element={<HomePageLayouts> <GastosComunesPage /> </HomePageLayouts>} />
-                    <Route path="/anuncios" element={<HomePageLayouts> <AnunciosPage /> </HomePageLayouts>} />
-                    <Route path="/residentes" element={<HomePageLayouts> <ResidentesPage /> </HomePageLayouts>} />
-                    <Route path="/documentos" element={<HomePageLayouts> <DocumentosPage /> </HomePageLayouts>} />
-                    <Route path="/administrador" element={<HomePageLayouts> <AdministradorPage /> </HomePageLayouts>} />
-                    <Route path="/residentes/perfil" element={<HomePageLayouts> <PerfilResidentePage /> </HomePageLayouts>} />
+                    <Route element={<ProtectedRoute/>}>
+                        <Route element={<HomePageLayouts />}>
+                            <Route path="/" element={ <HomePage /> } />
+                            <Route path="/gastos-comunes" element={ <GastosComunesPage /> } />
+                            <Route path="/anuncios" element={ <AnunciosPage /> } />
+                            <Route path="/residentes" element={ <ResidentesPage /> } />
+                            <Route path="/documentos" element={ <DocumentosPage /> } />
+                            <Route path="/administrador" element={ <AdministradorPage /> } />
+                            <Route path="/residentes/perfil/:id" element={ <PerfilResidentePage /> } />
+                        </Route>
+                    </Route>
 
                     {/* Not Found */}
                     <Route path="*" element={<NotFound />} />
