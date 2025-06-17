@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -6,14 +6,16 @@ import { motion } from "framer-motion";
 import { SinResultados } from "../../../components/ui/SinResultados";
 import { Spinner } from "../../../components/ui/Spinner";
 
+// Contexts
+import { useResidentes } from "../../../context/ResidentesContext";
+
 // Icons
 import { MdPerson, MdEmail, MdHouse, MdVerifiedUser, MdVisibility } from "react-icons/md";
 
 export const ListaResidentes = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [residentes, setResidentes] = useState([]);
     const [filtroCasa, setFiltroCasa] = useState("all");
-    const [loading, setLoading] = useState(true);
+    const { residentes, loading } = useResidentes();
 
     const residentesFiltrados =
         filtroCasa === "all"
@@ -34,33 +36,11 @@ export const ListaResidentes = () => {
         }
     };
 
-    useEffect(() => {
-        const getAllResidentes = async() =>{
-            try {
-                const URL =
-                import.meta.env.VITE_APP_MODE === "desarrollo"
-                    ? import.meta.env.VITE_URL_DESARROLLO
-                    : import.meta.env.VITE_URL_PRODUCCION;
-
-            const response = await fetch(`${URL}/api/v1/residentes/get-all-residentes`, {credentials:"include"})
-            const data = await response.json()
-            setResidentes(data.data)
-            setLoading(false);
-            } catch (error) {
-                console.log(error);  
-            }
-        }
-        getAllResidentes()
-    
-    }, [])
-    
-
-
     if (loading) return <Spinner />
 
     return (
         <>
-        {residentes ? (
+        {residentes.length > 0 ? (
             <section className="container mx-auto">
                 <motion.div
                 initial={{ y: -30, opacity: 0 }}

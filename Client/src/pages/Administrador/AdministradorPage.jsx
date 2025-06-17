@@ -1,7 +1,10 @@
-
+// Components
+import { AdministradorPanel } from "./components/AdministradorPanel";
 
 export const AdministradorPage = () => {
     return (
-        <div>AdministradorPage</div>
+        <>
+            <AdministradorPanel />
+        </>
     )
-}
+};
