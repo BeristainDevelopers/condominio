@@ -85,3 +85,72 @@ export const getResidenteById = async (req, res, next) => {
         next();
     }
 };
+
+export const updateResidente = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const {
+            nombre,
+            apellido,
+            rut,
+            email,
+            id_casa,
+            es_representante,
+            activo
+        } = req.body;
+
+        const residente = await Residente.findOne({
+            where: { id },
+        });
+
+        if (!residente) {
+            return res.status(404).json({
+                code: 404,
+                message: "Residente no encontrado",
+            });
+        }
+
+        residente.nombre = nombre ?? residente.nombre;
+        residente.apellido = apellido ?? residente.apellido;
+        residente.rut = rut ?? residente.rut;
+        residente.email = email ?? residente.email;
+        residente.id_casa = id_casa ?? residente.id_casa;
+        residente.es_representante = es_representante ?? residente.es_representante;
+        residente.activo = activo ?? residente.activo;
+
+        await residente.save();
+
+        const residenteActualizado = await Residente.findOne({
+            where: { id },
+            include: [
+                {
+                    model: Casas,
+                    as: "residente_casa",
+                },
+            ],
+        });
+
+        const residenteMap = {
+            id: residenteActualizado.id,
+            nombre: residenteActualizado.nombre,
+            apellido: residenteActualizado.apellido,
+            rut: residenteActualizado.rut,
+            email: residenteActualizado.email,
+            casa: residenteActualizado.residente_casa?.nombre,
+            id_casa: residenteActualizado.id_casa,
+            es_representante: residenteActualizado.es_representante,
+            activo: residenteActualizado.activo,
+            createdAt: residenteActualizado.createdAt,
+            updatedAt: residenteActualizado.updatedAt
+        };
+
+        res.status(200).json({
+            code: 200,
+            message: "Residente actualizado con éxito",
+            data: residenteMap,
+        });
+    } catch (error) {
+        console.log(error);
+        next();
+    }
+};

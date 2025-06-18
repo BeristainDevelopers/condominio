@@ -8,13 +8,7 @@ import { Spinner } from "../../../../components/ui/Spinner";
 import { ModalEditarResidente } from "../components/ModalEditarResidente";
 
 // Icons
-import {
-    MdHouse,
-    MdEmail,
-    MdPerson,
-    MdVerifiedUser,
-    MdEdit,
-} from "react-icons/md";
+import { MdHouse, MdEmail, MdPerson, MdVerifiedUser, MdEdit } from "react-icons/md";
 
 export const PerfilResidente = ({ residente, loading, setResidente, todasLasCasas }) => {
     const [modalAbierto, setModalAbierto] = useState(false);

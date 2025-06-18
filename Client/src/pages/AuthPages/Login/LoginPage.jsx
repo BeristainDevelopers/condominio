@@ -1,3 +1,4 @@
+// Components
 import { LoginForm } from './components/LoginForm'
 
 export const LoginPage = () => {
@@ -6,7 +7,6 @@ export const LoginPage = () => {
         <div className="flex justify-center items-center h-screen bg-gray-200">
             <LoginForm />
         </div>
-        
     </>
   )
-}
+};

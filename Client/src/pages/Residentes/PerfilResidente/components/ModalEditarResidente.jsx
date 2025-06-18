@@ -1,6 +1,8 @@
 import Select from "react-select";
-import { reactSelectStyles } from "../../../../components/ui/reactSelectStyles";
 import { motion, AnimatePresence } from "framer-motion";
+
+// Components
+import { reactSelectStyles } from "../../../../components/ui/reactSelectStyles";
 
 // Icons
 import { MdHouse, MdEmail, MdPerson } from "react-icons/md";
@@ -12,19 +14,52 @@ export const ModalEditarResidente = ({
     setResidente,
     todasLasCasas
 }) => {
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setResidente((prev) => ({ ...prev, [name]: value }));
     };
-    const handleGuardar = () => {
-        console.log(residente);
+
+const handleGuardar = async () => {
+    try {
+/*         const URL =
+            import.meta.env.VITE_APP_MODE === "desarrollo"
+                ? import.meta.env.VITE_URL_DESARROLLO
+                : import.meta.env.VITE_URL_PRODUCCION;
+
+        // Preparamos solo los campos que el backend necesita
+        const { id, nombre, apellido, email, id_casa, es_representante, activo } = residente;
+
+        const updateData = { nombre, apellido, email, id_casa, es_representante, activo };
+
+        const response = await fetch(`${URL}/api/v1/residentes/update-residente/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify(updateData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Error al actualizar residente:", errorData.message);
+            alert("Ocurrió un error al actualizar el residente");
+            return;
+        } */
+
+        console.log("Residente actualizado correctamente");
         onClose();
-    };
+    } catch (error) {
+        console.error("Error inesperado:", error);
+        alert("Error inesperado al actualizar residente");
+    }
+};
 
     const casasOptions = todasLasCasas.map((casa) => ({
         value: casa.id,
         label: casa.nombre,
-        }));
+    }));
 
     return (
         <AnimatePresence>
