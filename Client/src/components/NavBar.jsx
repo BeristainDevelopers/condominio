@@ -19,13 +19,13 @@ export const Navbar = () => {
         <nav className="bg-gray-300 p-6 shadow-md border-b border-gray-200 hidden md:block">
             <div className="container mx-auto flex justify-between items-center">
                 <div className="text-lg font-bold">
-                    <Link to="/">
+                    <Link to="/home">
                         <h1>LOGO</h1>
                     </Link>
                 </div>
                 <ul className="flex space-x-4">
                     <li>
-                        <Link to="/" className={`text-lg transition-all duration-300 ${location.pathname.startsWith("/home") ? "text-indigo-700 font-bold text-xl" : "text-gray-700 font-semibold hover:text-gray-400"}`}>
+                        <Link to="/home" className={`text-lg transition-all duration-300 ${location.pathname.startsWith("/home") ? "text-indigo-700 font-bold text-xl" : "text-gray-700 font-semibold hover:text-gray-400"}`}>
                             <FaHome className="inline-block mb-1 mr-1" />Inicio
                         </Link>
                     </li>
@@ -61,7 +61,7 @@ export const Navbar = () => {
         {/* NAV MOBILE */}
         <nav className="bg-gray-300 p-4 shadow-md border-b border-gray-200 flex justify-between items-center md:hidden">
             <div className="text-lg font-bold">
-                <Link to="/">
+                <Link to="/home">
                     <h1>LOGO</h1>
                 </Link>
             </div>
@@ -74,7 +74,7 @@ export const Navbar = () => {
                 <div className="absolute top-16 left-0 w-full bg-gray-300 shadow-md z-50">
                     <ul className="flex flex-col text-center py-4 space-y-4">
                         <li>
-                            <Link to="/" onClick={() => setMenuOpen(false)} className={`text-lg ${location.pathname.startsWith("/home") ? "text-indigo-700 font-bold text-xl" : "text-gray-700 font-semibold"}`}>
+                            <Link to="/home" onClick={() => setMenuOpen(false)} className={`text-lg ${location.pathname.startsWith("/home") ? "text-indigo-700 font-bold text-xl" : "text-gray-700 font-semibold"}`}>
                                 <FaHome className="inline-block mr-1" /> Inicio
                             </Link>
                         </li>

@@ -40,7 +40,7 @@ function App() {
                     {/* Home Routes */}
                     <Route element={<ProtectedRoute/>}>
                         <Route element={<HomePageLayouts />}>
-                            <Route path="/" element={ <HomePage /> } />
+                            <Route path="/home" element={ <HomePage /> } />
                             <Route path="/gastos-comunes" element={ <GastosComunesPage /> } />
                             <Route path="/anuncios" element={ <AnunciosPage /> } />
                             <Route path="/residentes" element={ <ResidentesPage /> } />

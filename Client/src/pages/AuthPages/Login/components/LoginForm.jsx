@@ -65,7 +65,7 @@ export const LoginForm = () => {
             if (data.code === 200) {
                 dispatch(fetchUsuario());
                 enqueueSnackbar("Sesión iniciada correctamente", { variant: "success" });
-                navigate("/"); 
+                navigate("/home"); 
             } else {
                 setError({ ...error, invalidCredentials: true });
                 enqueueSnackbar(data.message, { variant: "error" });
