@@ -10,4 +10,6 @@ router.get("/get-casas", getAllCasas)
 router.post("/generar-gasto-comun", generarGastosComunes)
 
 
+
+
 export default router

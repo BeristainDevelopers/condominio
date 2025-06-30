@@ -1,5 +1,7 @@
 import nodemailer from "nodemailer";
 import { crearTemplateHtml } from "../utils/templatesEmail.js";
+import { crearTemplateAviso } from "../utils/templatesAviso.js";
+import { crearTemplateGastosComunes } from "../utils/templateGastoComun.js";
 
 const transporter = nodemailer.createTransport({
     service: "gmail", 
@@ -44,3 +46,51 @@ export const sendEmail = (email, asunto, username, token=null ) =>{
 });
 }
 
+export const enviarMailAviso = (email, asunto, titulo, nombreCompleto, mensaje)=>{
+    try {
+        const mailOptions = {
+            from: "Comunidad Habitacional Salvador 1050",
+            to: `${email}`,
+            subject: asunto,
+            html: crearTemplateAviso(titulo, nombreCompleto, mensaje)
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log("Error al enviar el correo:", error);
+            } else {
+                console.log("Correo enviado:", info.response);
+            }
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const enviarMailGastoComun = (email, asunto, nombreCompleto, rutaPdf, dia, mes, año)=>{
+    try {
+        const mailOptions = {
+            from: "Comunidad Habitacional Salvador 1050",
+            to: `${email}`,
+            subject: asunto,
+            html: crearTemplateGastosComunes(nombreCompleto, dia, mes, año),
+            attachments: [
+                {
+                    filename: `Gasto_Comun_${mes}_${año}.pdf`,
+                    path: rutaPdf,
+                    contentType: "application/pdf"
+                }
+            ]
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log("Error al enviar el correo:", error);
+            } else {
+                console.log("Correo enviado:", info.response);
+            }
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}

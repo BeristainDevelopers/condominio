@@ -19,13 +19,13 @@ export const Navbar = () => {
         <nav className="bg-gray-300 p-6 shadow-md border-b border-gray-200 hidden md:block">
             <div className="container mx-auto flex justify-between items-center">
                 <div className="text-lg font-bold">
-                    <Link to="/home">
+                    <Link to="/">
                         <h1>LOGO</h1>
                     </Link>
                 </div>
                 <ul className="flex space-x-4">
                     <li>
-                        <Link to="/home" className={`text-lg transition-all duration-300 ${location.pathname.startsWith("/home") ? "text-indigo-700 font-bold text-xl" : "text-gray-700 font-semibold hover:text-gray-400"}`}>
+                        <Link to="/" className={`text-lg transition-all duration-300 ${location.pathname === "/"  ? "text-indigo-700 font-bold text-xl" : "text-gray-700 font-semibold hover:text-gray-400"}`}>
                             <FaHome className="inline-block mb-1 mr-1" />Inicio
                         </Link>
                     </li>

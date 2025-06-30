@@ -15,6 +15,10 @@ export const GastoComun = sequelize.define("GastoComun",{
         type: DataTypes.STRING(7),
         allowNull: false,
     },
+    year: {
+        type: DataTypes.STRING(7),
+        allowNull: false,
+    },
     ruta_pdf: {
         type: DataTypes.TEXT,
         allowNull: false,

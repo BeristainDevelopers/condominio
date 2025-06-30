@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import Select from "react-select";
+import { useSnackbar } from "notistack";
 
 // Contexts
 import { useResidentes } from "../../../context/ResidentesContext";
@@ -11,30 +13,85 @@ import { Spinner } from "../../../components/ui/Spinner";
 // Icons
 import { HiMail, HiOutlineDocumentText, HiPencilAlt, HiHome } from "react-icons/hi";
 
-export const FormularioAnuncio = ({ onEnviar }) => {
+export const FormularioAnuncio = () => {
+    const { enqueueSnackbar } = useSnackbar();
     const [asunto, setAsunto] = useState("");
     const [titulo, setTitulo] = useState("");
     const [mensaje, setMensaje] = useState("");
     const [destino, setDestino] = useState("todos");
+    const [casas, setCasas] = useState([]);
     const [error, setError] = useState("");
     const { residentes, loading } = useResidentes();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = async(e) => {
+       try {
+         e.preventDefault();
         if (!asunto.trim() || !titulo.trim() || !mensaje.trim()) {
             setError("Por favor, completa todos los campos");
             return;
         }
-        setError("");
-        // Pasar los datos al handler externo (ejemplo: enviar email)
-        onEnviar({ asunto, titulo, mensaje, destino });
-        // Reset form
-        setAsunto("");
-        setTitulo("");
-        setMensaje("");
-        setDestino("todos");
+
+        const formData = new FormData()
+        formData.append("casas", JSON.stringify(destino));
+        formData.append("mensaje", mensaje)
+        formData.append("asunto", asunto)
+        formData.append("titulo", titulo)
+        const requestOptions = {
+                method: "POST",
+                credentials: "include",
+                body: formData
+            }
+            const URL =
+                import.meta.env.VITE_APP_MODE === "desarrollo"
+                    ? import.meta.env.VITE_URL_DESARROLLO
+                    : import.meta.env.VITE_URL_PRODUCCION;
+
+            const response = await fetch(`${URL}/api/v1/residentes/enviar-anuncio`, requestOptions)
+            const data = await response.json()
+
+            if (data.code === 200) {
+                enqueueSnackbar("Anuncio Enviado Correctamente", { variant: "success" });
+                navigate("/"); 
+            } else {
+                enqueueSnackbar(data.message, { variant: "error" });
+            }
+       } catch (error) {
+        
+       }
+
     };
 
+    const todasLasCasas = casas.map(casa => ({
+        value: casa.id,
+        label: casa.nombre
+    }));
+
+    useEffect(() => {
+        const getAllCasas = async() =>{
+            try {
+                const requestOptions = {
+                method: "GET",
+                credentials: "include"
+            }
+            const URL =
+                import.meta.env.VITE_APP_MODE === "desarrollo"
+                    ? import.meta.env.VITE_URL_DESARROLLO
+                    : import.meta.env.VITE_URL_PRODUCCION;
+
+            const response = await fetch(`${URL}/api/v1/gastos-comunes/get-casas`, requestOptions)
+            const data = await response.json()
+            setCasas(data.data.map((casa) => ({
+                        value: casa.id,
+                        label: casa.nombre
+                })))
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getAllCasas()
+
+    }, [])
+    
     if (loading) return <Spinner />
 
     return (
@@ -65,18 +122,26 @@ export const FormularioAnuncio = ({ onEnviar }) => {
                         <span className="flex items-center gap-2 font-semibold text-gray-700 mb-1">
                             <HiHome className="w-5 h-5 text-indigo-600" /> Destinatario
                         </span>
-                        <select
-                            value={destino}
-                            onChange={(e) => setDestino(e.target.value)}
-                            className="w-full rounded-md border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-                        >
-                            <option value="todos">Enviar a todos</option>
-                            {[...new Set(residentes.map((r) => r.casa))].map((casa) => (
-                                <option key={casa} value={`casa-${casa}`}>
-                                    Casa {casa}
-                                </option>
-                            ))}
-                        </select>
+                        <div className="flex">
+                            <Select
+                                isMulti
+                                options={casas} 
+                                value={casas.filter(casa => destino.includes(casa.value))} 
+                                onChange={(selected) => setDestino(selected.map(s => s.value))}
+                                placeholder="Selecciona casas"
+                                className="text-sm w-[70%] me-4"
+                                closeMenuOnSelect={false}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setDestino(casas.map(c => c.value))}
+                                className="px-3 py-1 max-h-[40px] bg-indigo-600 hover:bg-indigo-800 text-white rounded text-sm w-[28%] cursor-pointer"
+                                >
+                                Seleccionar todas
+                            </button>
+                        </div> 
+
+
                     </label>
 
                     {/* Asunto */}

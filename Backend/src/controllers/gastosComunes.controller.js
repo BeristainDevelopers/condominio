@@ -4,13 +4,23 @@ import { getCurrentDirectory } from "../utils/path.js";
 import * as path from "path";
 import { fileURLToPath } from "url";
 import { Casas } from "../models/Casas.model.js";
+import { GastoComun } from "../models/GastosComunes.model.js";
+import { enviarMailGastoComun } from "../services/email.services.js";
+import { Residente } from "../models/Residentes.model.js";
+import fs from "fs";
+
 
 const __dirname = getCurrentDirectory(fileURLToPath(import.meta.url));
 
 export const generarGastosComunes = async (req, res, next) => {
     try {
 
-        const { fondo_reserva, gasto_comun, gastos_extras } = req.body;
+        const { fondo_reserva, gasto_comun, gastos_extras, fecha } = req.body;
+        const fechaArray = fecha.split("-")
+        const year = fechaArray[0]
+        const mes = fechaArray[1]
+        const dia = fechaArray[2]
+
         let extrasParseados = [];
 
         extrasParseados = JSON.parse(gastos_extras);
@@ -35,6 +45,7 @@ export const generarGastosComunes = async (req, res, next) => {
         });
 
         for (const casa of resumenFinal) {
+
             const datos = {
                 fecha_informe: "22/10/2025",
                 casa: casa.casa,
@@ -65,17 +76,37 @@ export const generarGastosComunes = async (req, res, next) => {
             };
 
             const html = generarTemplateGastoComunPDF(datos);
-            const rutaRelativa = path.join("upload", `${datos.casa}.pdf`);
+            const rutaRelativa = path.join("upload", `${datos.casa}-${datos.mes_gasto}-${year}.pdf`);
             const rutaAbsoluta = path.join(__dirname, "../", rutaRelativa);
 
             await generarPDF(html, rutaAbsoluta);
-            
 
+            const residente = await Residente.findOne({
+                raw:true,
+                where: {
+                    id_casa:casa.casa_id,
+                    es_representante: true
+                }
+            })
+
+            const { nombre, apellido, email } = residente
+            const nombreCompleto = `${nombre} ${apellido}`
+            const asunto = `Gasto Comun Casa ${casa.casa} ${mes} ${year}`
+            
+            await enviarMailGastoComun(email, asunto, nombreCompleto, rutaAbsoluta, dia, mes, year)
+
+            await GastoComun.create({
+                casa: casa.casa_id,
+                mes,
+                year,
+                ruta_pdf: rutaRelativa,
+                estado: "enviado"
+            }) 
         }
 
         return res.status(201).json({
             code: 201,
-            message: "Gasto común creado exitosamente.",
+            message: "Gasto común creado exitosamente.",ñ
         });
     } catch (error) {
         console.error("Error al crear gasto común:", error);

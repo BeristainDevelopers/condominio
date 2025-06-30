@@ -1,5 +1,6 @@
 import { Residente } from "../models/Residentes.model.js";
 import { Casas } from "../models/Casas.model.js";
+import { enviarMailAviso } from "../services/email.services.js";
 
 export const getAllResidentes = async (req, res, next) => {
     try {
@@ -154,3 +155,34 @@ export const updateResidente = async (req, res, next) => {
         next();
     }
 };
+
+export const enviarAviso = async(req, res, next) =>{
+    try {
+        const { casas, asunto, titulo, mensaje } = req.body
+        const parsedCasas = typeof casas === "string" ? JSON.parse(casas) : casas;
+
+
+        for (const casa of parsedCasas) {
+            const representante = await Residente.findOne({
+                raw:true,
+                where:{
+                    es_representante:true,
+                    id_casa: casa
+                }
+            })
+            console.log(representante);
+            const { email, nombre, apellido } = representante
+            const nombreCompleto = `${nombre} ${apellido}`
+
+            enviarMailAviso(email, asunto, titulo, nombreCompleto, mensaje)
+            
+        }
+        res.status(200).json({
+            code: 200,
+            message: "Email enviado correctamente",
+        });
+    } catch (error) {
+        console.log(error);
+        next();
+    }
+}

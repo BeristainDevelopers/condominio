@@ -4,7 +4,7 @@ import Select from "react-select";
 // Icons
 import { MdOutlineDelete } from "react-icons/md";
 
-export const GastosExtras = ({ volver, todasLasCasas, gastoComun, fondoReserva }) => {
+export const GastosExtras = ({ volver, todasLasCasas, gastoComun, fondoReserva, fecha }) => {
     
     const [nombre, setNombre] = useState("");
     const [monto, setMonto] = useState("");
@@ -56,6 +56,7 @@ export const GastosExtras = ({ volver, todasLasCasas, gastoComun, fondoReserva }
         try {
             const formData = new FormData()
             formData.append("gasto_comun", gastoComun)
+            formData.append("fecha", fecha)
             formData.append("fondo_reserva", fondoReserva)
             formData.append("gastos_extras", JSON.stringify(gastos))
 
