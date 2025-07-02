@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaFilePdf } from "react-icons/fa";
 
 const documentosMock = [
-    { id: 1, casa: 1, mes: "Enero", año: 2025, titulo: "Gasto Común Enero", url: "https://www.emol.com" },
-    { id: 2, casa: 2, mes: "Febrero", año: 2025, titulo: "Gasto Común Febrero", url: "https://www.emol.com" },
-    { id: 3, casa: 1, mes: "Marzo", año: 2024, titulo: "Gasto Común Marzo", url: "https://www.emol.com" },
-    { id: 4, casa: 3, mes: "Enero", año: 2025, titulo: "Gasto Común Enero", url: "https://www.emol.com" },
+    { id: 1, casa: 1, mes: "Enero", año: 2025, titulo: "Gasto Común Enero", url: "../../../../public/pdfs/TEST.pdf" },
+    { id: 2, casa: 2, mes: "Febrero", año: 2025, titulo: "Gasto Común Febrero", url: "../../../../public/pdfs/TEST.pdf" },
+    { id: 3, casa: 1, mes: "Marzo", año: 2024, titulo: "Gasto Común Marzo", url: "../../../../public/pdfs/TEST2.pdf" },
+    { id: 4, casa: 3, mes: "Enero", año: 2025, titulo: "Gasto Común Enero", url: "../../../../public/pdfs/TEST2.pdf" },
 ];
 
 const casasDisponibles = [...new Set(documentosMock.map(doc => doc.casa))];
@@ -20,6 +20,7 @@ export const DocumentosPanel = () => {
     const [mes, setMes] = useState("");
     const [año, setAño] = useState("");
     const [resultados, setResultados] = useState([]);
+    const [pdfSeleccionado, setPdfSeleccionado] = useState(null);
 
     const handleBuscar = () => {
         const filtrados = documentosMock.filter((doc) => {
@@ -33,6 +34,7 @@ export const DocumentosPanel = () => {
     };
 
     return (
+        <>
         <motion.div
         className="p-6 bg-white rounded-lg shadow space-y-6 container mx-auto"
         initial={{ opacity: 0, y: 30 }}
@@ -118,19 +120,43 @@ export const DocumentosPanel = () => {
                             </div>
                         </div>
 
-                        <a
-                        href={doc.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm bg-red-600 text-white font-semibold px-3 py-1 rounded hover:bg-red-800 transition-colors duration-300"
+                        <button
+                        onClick={() => setPdfSeleccionado(doc.url)}
+                        className="text-sm bg-red-600 text-white font-semibold px-3 py-1 rounded cursor-pointer hover:bg-red-800 transition-colors duration-300"
                         >
                         Ver PDF
-                        </a>
+                        </button>
                     </motion.div>
                     ))}
                 </motion.div>
                 )}
             </AnimatePresence>
         </motion.div>
+
+        {/* Mostrar PDF */}
+        {pdfSeleccionado && (
+        <motion.div
+        className="mt-8 h-[80vh] rounded overflow-hidden max-w-7xl mx-auto text-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        >
+            {/* Botón cerrar PDF */}
+            <button
+            onClick={() => setPdfSeleccionado(null)}
+            className="bg-gray-300 text-gray-800 font-semibold px-3 py-1 mb-2 
+            rounded shadow transition-colors duration-300 cursor-pointer hover:bg-gray-400"
+            >
+                Cerrar visor
+            </button>
+
+            {/* Visor PDF */}
+            <iframe
+            src={pdfSeleccionado}
+            title="Documento PDF"
+            className="w-full h-full border-2 border-gray-300 rounded"
+            />
+        </motion.div>
+        )}
+    </>
     );
 };
