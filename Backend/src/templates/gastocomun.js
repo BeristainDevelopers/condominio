@@ -51,7 +51,7 @@ export const generarTemplateGastoComunPDF = (datos) => {
       </div>
   
       <div class="info">
-        <p><strong>1.- GASTOS COMUNES DEL MES</strong> ${mes_gasto}</p>
+        <p><strong>1.- GASTOS COMUNES DEL MES:</strong> ${mes_gasto}</p>
       </div>
   
       <table>

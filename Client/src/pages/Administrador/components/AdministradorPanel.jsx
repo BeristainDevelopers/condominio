@@ -5,25 +5,25 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ResidentesPanel } from "../Panel/ResidentesPanel";
 
 // Icons
-import { MdMenu, MdClose, MdDashboard, MdPeople, MdAttachMoney, MdSettings, MdLogout, MdAdminPanelSettings } from "react-icons/md";
+import { MdMenu, MdClose, MdPeople, MdAttachMoney, MdSettings, MdLogout, MdAdminPanelSettings } from "react-icons/md";
+import { components } from "react-select";
+import { Logout } from "./Logout";
 
 export const AdministradorPanel = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [selected, setSelected] = useState("Dashboard");
+    const [selected, setSelected] = useState("Residentes");
 
     const menuItems = [
-        { label: "Dashboard", icon: <MdDashboard />,  },
         { label: "Residentes", icon: <MdPeople />, component: <ResidentesPanel /> },
         { label: "Pagos", icon: <MdAttachMoney /> },
-        { label: "Configuración", icon: <MdSettings /> },
-        { label: "Cerrar sesión", icon: <MdLogout /> },
+        { label: "Cerrar sesión", icon: <MdLogout />, component: <Logout /> },
     ];
 
     const currentItem = menuItems.find(item => item.label === selected);
     const toggleSidebar = () => setIsOpen(!isOpen);
 
     return (
-        <div className="flex h-screen bg-gray-100 relative">
+        <div className="flex min-h-[calc(100vh-115px)] bg-gray-100 relative">
             {/* Nav mobile */}
             <button 
                 onClick={toggleSidebar}

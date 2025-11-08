@@ -16,7 +16,7 @@ export const PerfilResidente = ({ residente, loading, setResidente, todasLasCasa
     if (loading) return <Spinner />;
 
     return (
-        <>
+        <div className="pt-20">
             {residente ? (
                 <section>
                     <motion.div
@@ -115,6 +115,6 @@ export const PerfilResidente = ({ residente, loading, setResidente, todasLasCasa
             ) : (
                 <SinResultados data={"perfiles"} />
             )}
-        </>
+        </div>
     );
 };

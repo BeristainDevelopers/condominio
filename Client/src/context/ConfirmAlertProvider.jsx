@@ -35,7 +35,7 @@ export const ConfirmAlertProvider = ({ children }) => {
             {children}
 
             {dialog && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-black/40 bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg p-6 w-full max-w-sm text-center shadow-xl">
                         <h2 className="text-xl font-semibold mb-4">
                             {dialog.title}
@@ -47,13 +47,13 @@ export const ConfirmAlertProvider = ({ children }) => {
                                 <>
                                     <button
                                         onClick={() => handleClose(false)}
-                                        className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded"
+                                        className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded cursor-pointer"
                                     >
                                         {dialog.cancelText}
                                     </button>
                                     <button
                                         onClick={() => handleClose(true)}
-                                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+                                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded cursor-pointer"
                                     >
                                         {dialog.confirmText}
                                     </button>
@@ -61,7 +61,7 @@ export const ConfirmAlertProvider = ({ children }) => {
                             ) : (
                                 <button
                                     onClick={() => handleClose(true)}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer"
                                 >
                                     {dialog.okText}
                                 </button>

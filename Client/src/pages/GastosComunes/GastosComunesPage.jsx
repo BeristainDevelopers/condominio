@@ -58,7 +58,7 @@ export const GastosComunesPage = () => {
     };
 
     return (
-        <div className="bg-gray-100 p-6">
+        <div className="bg-gray-100 pt-20">
             <motion.div
             className="max-w-3xl mx-auto bg-white rounded-lg shadow p-6"
             initial={{ opacity: 0, y: 30 }}

@@ -156,6 +156,27 @@ export const updateResidente = async (req, res, next) => {
     }
 };
 
+export const deleteResidente = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const residente = await Residente.findOne({ where: { id } });
+        if (!residente) {
+            return res.status(404).json({
+                code: 404,
+                message: "Residente no encontrado",
+            });
+        }
+        await residente.destroy();
+        res.status(200).json({
+            code: 200,
+            message: "Residente eliminado con éxito",
+        });
+    } catch (error) {
+        console.log(error);
+        next();
+    }
+};
+
 export const enviarAviso = async(req, res, next) =>{
     try {
         const { casas, asunto, titulo, mensaje } = req.body
@@ -185,4 +206,4 @@ export const enviarAviso = async(req, res, next) =>{
         console.log(error);
         next();
     }
-}
+};

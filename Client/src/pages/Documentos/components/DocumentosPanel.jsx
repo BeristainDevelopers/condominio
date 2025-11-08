@@ -34,7 +34,7 @@ export const DocumentosPanel = () => {
     };
 
     return (
-        <>
+        <div className="pt-20 pb-10">
         <motion.div
         className="p-6 bg-white rounded-lg shadow space-y-6 container mx-auto"
         initial={{ opacity: 0, y: 30 }}
@@ -157,6 +157,6 @@ export const DocumentosPanel = () => {
             />
         </motion.div>
         )}
-    </>
+    </div>
     );
 };

@@ -97,7 +97,7 @@ export const FormularioAnuncio = () => {
     return (
         <>
         {residentes.length > 0 ? (
-            <section className="mt-4">
+            <section className="pt-20">
                 <motion.form
                     onSubmit={handleSubmit}
                     initial={{ opacity: 0, y: 20 }}

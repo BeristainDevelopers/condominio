@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { reactSelectStyles } from "../../../../components/ui/reactSelectStyles";
 
 // Icons
-import { MdHouse, MdEmail, MdPerson } from "react-icons/md";
+import { MdHouse, MdEmail, MdPerson, MdNumbers } from "react-icons/md";
 
 export const ModalEditarResidente = ({
     isOpen,
@@ -22,17 +22,17 @@ export const ModalEditarResidente = ({
 
 const handleGuardar = async () => {
     try {
-/*         const URL =
+        const URL =
             import.meta.env.VITE_APP_MODE === "desarrollo"
                 ? import.meta.env.VITE_URL_DESARROLLO
                 : import.meta.env.VITE_URL_PRODUCCION;
 
         // Preparamos solo los campos que el backend necesita
-        const { id, nombre, apellido, email, id_casa, es_representante, activo } = residente;
+        const { id, nombre, apellido, rut, email, id_casa, es_representante, activo } = residente;
 
-        const updateData = { nombre, apellido, email, id_casa, es_representante, activo };
+        const updateData = { nombre, apellido, rut, email, id_casa, es_representante, activo };
 
-        const response = await fetch(`${URL}/api/v1/residentes/update-residente/${id}`, {
+        const response = await fetch(`http://localhost:3000/api/v1/residentes/update-residente/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -46,7 +46,7 @@ const handleGuardar = async () => {
             console.error("Error al actualizar residente:", errorData.message);
             alert("Ocurrió un error al actualizar el residente");
             return;
-        } */
+        }
 
         console.log("Residente actualizado correctamente");
         onClose();
@@ -117,6 +117,20 @@ const handleGuardar = async () => {
 
                             <div>
                                 <label className="block text-sm font-semibold mb-1">
+                                    <MdNumbers className="inline-block mb-1 mr-1 text-indigo-600" />
+                                    RUT
+                                </label>
+                                <input
+                                    type="text"
+                                    name="rut"
+                                    value={residente.rut}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-semibold mb-1">
                                     <MdEmail className="inline-block mb-1 mr-1 text-indigo-600" />
                                     Correo electrónico
                                 </label>
@@ -160,6 +174,23 @@ const handleGuardar = async () => {
                                 />
                                 <label className="text-sm font-medium cursor-pointer">
                                     Es representante
+                                </label>
+                            </div>
+
+                            <div className="flex items-center space-x-3">
+                                <input
+                                    type="checkbox"
+                                    checked={residente.activo}
+                                    onChange={(e) =>
+                                        setResidente((prev) => ({
+                                            ...prev,
+                                            activo: e.target.checked,
+                                        }))
+                                    }
+                                    className="h-4 w-4 cursor-pointer accent-indigo-600"
+                                />
+                                <label className="text-sm font-medium cursor-pointer">
+                                    Activo
                                 </label>
                             </div>
                         </div>

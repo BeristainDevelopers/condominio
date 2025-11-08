@@ -15,7 +15,9 @@ const __dirname = getCurrentDirectory(fileURLToPath(import.meta.url));
 export const generarGastosComunes = async (req, res, next) => {
     try {
 
+        console.log(req.body)
         const { fondo_reserva, gasto_comun, gastos_extras, fecha } = req.body;
+        console.log("CONTROLER")
         const fechaArray = fecha.split("-")
         const year = fechaArray[0]
         const mes = fechaArray[1]
@@ -25,7 +27,14 @@ export const generarGastosComunes = async (req, res, next) => {
 
         extrasParseados = JSON.parse(gastos_extras);
 
-        const casas = await Casas.findAll();
+        const casas = await Casas.findAll({
+            where:{
+                id: 11
+            },
+            raw:true
+        });
+
+        console.log(casas)
 
         const resumenFinal = casas.map((casa) => {
             const gastosParaCasa = extrasParseados
@@ -106,7 +115,7 @@ export const generarGastosComunes = async (req, res, next) => {
 
         return res.status(201).json({
             code: 201,
-            message: "Gasto común creado exitosamente.",ñ
+            message: "Gasto común creado exitosamente.",
         });
     } catch (error) {
         console.error("Error al crear gasto común:", error);
