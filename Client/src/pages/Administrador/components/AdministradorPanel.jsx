@@ -23,7 +23,7 @@ export const AdministradorPanel = () => {
     const toggleSidebar = () => setIsOpen(!isOpen);
 
     return (
-        <div className="flex min-h-[calc(100vh-115px)] bg-gray-100 relative">
+        <div className="flex min-h-[calc(100vh-115px)] bg-gradient-to-br from-indigo-50 to-white relative">
             {/* Nav mobile */}
             <button 
                 onClick={toggleSidebar}

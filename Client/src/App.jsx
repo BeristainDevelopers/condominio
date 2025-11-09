@@ -15,7 +15,6 @@ import { AnunciosPage } from "./pages/Anuncios/AnunciosPage";
 import { ResidentesPage } from "./pages/Residentes/ResidentesPage";
 import { DocumentosPage } from "./pages/Documentos/DocumentosPage";
 import { AdministradorPage } from "./pages/Administrador/AdministradorPage";
-import { PerfilResidentePage } from "./pages/Residentes/PerfilResidente/PerfilResidentePage";
 import { ProtectedRoute } from "./secure/ProtectedRoutes";
 
 // Components
@@ -46,7 +45,6 @@ function App() {
                             <Route path="/residentes" element={ <ResidentesPage /> } />
                             <Route path="/documentos" element={ <DocumentosPage /> } />
                             <Route path="/administrador" element={ <AdministradorPage /> } />
-                            <Route path="/residentes/perfil/:id" element={ <PerfilResidentePage /> } />
                         </Route>
                     </Route>
 

@@ -12,7 +12,7 @@ export const HomePageLayouts = () => {
             </header>
 
             {/* Body */}
-            <main className="bg-gray-100 min-h-[calc(100vh-115px)] md:min-h-[calc(100vh-130px)]">
+            <main className="bg-gradient-to-br from-indigo-50 to-white min-h-[calc(100vh-115px)] md:min-h-[calc(100vh-130px)]">
                 <Outlet />
             </main>
 

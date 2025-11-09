@@ -5,15 +5,20 @@ import { useDeleteResidente } from "../../../hooks/UseDeleteResidentes";
 // Components
 import { SinResultados } from "../../../components/ui/SinResultados";
 import { Spinner } from "../../../components/ui/Spinner";
+import BotonCrearResidente from "../components/BotonCrearResidente";
+import ModalCrearResidente from "../components/ModalCrearResidente";
+import BotonEditarResidente from "../components/BotonEditarResidente";
 // Contexts
 import { useResidentes } from "../../../context/ResidentesContext";
 // Icons
-import { MdPerson, MdEmail, MdHouse, MdVerifiedUser, MdDelete, MdEdit } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { MdPerson, MdEmail, MdHouse, MdVerifiedUser, MdDelete } from "react-icons/md";
+import ModalEditarResidente from "../components/ModalEditarResidente";
 
 export const ResidentesPanel = () => {
-  const [currentPage, setCurrentPage] = useState(1);
   const [filtroCasa, setFiltroCasa] = useState("all");
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [residenteEditar, setResidenteEditar] = useState(null);
   const { residentes, loading } = useResidentes();
   const { handleDelete } = useDeleteResidente(() => window.location.reload());
 
@@ -36,8 +41,9 @@ export const ResidentesPanel = () => {
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="p-4 space-y-4"
         >
-        {/* Filtro */}
-        <div className="flex items-center gap-3">
+        {/* Filtro y Botón crear usuario */}
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-3">
             <label className="font-semibold text-gray-700">Filtrar por casa:</label>
             <select
             className="border rounded px-2 py-1 text-sm"
@@ -55,8 +61,23 @@ export const ResidentesPanel = () => {
             ))}
             </select>
           </div>
+          <div>
+            <button type="button" onClick={() => setOpenCreateModal(true)}>
+              <BotonCrearResidente />
+            </button>
+            <ModalCrearResidente 
+              isOpen={openCreateModal} 
+              onClose={() => setOpenCreateModal(false)} 
+              onSuccess={() => {
+                setOpenCreateModal(false);
+                window.location.reload();
+              }}
+            />
+            
+          </div>
+        </div>
 
-          {/* Tabla con scroll y altura limitada */}
+          {/* Tabla usuarios*/}
           <div className="overflow-x-auto" style={{ maxHeight: '50vh', minHeight: '200px', overflowY: 'auto' }}>
             <table className="min-w-full bg-white shadow-md rounded-xl overflow-hidden text-sm text-center">
               <thead className="bg-indigo-600 text-white sticky top-0 z-10">
@@ -92,14 +113,10 @@ export const ResidentesPanel = () => {
                     </td>
                       <td className="flex px-4 py-3 justify-center">
                         <div className="flex justify-center items-center gap-2">
-                          <button 
-                            className="text-slate-100 bg-blue-600 px-2 py-1 rounded-lg  flex items-center justify-center gap-1 mx-auto cursor-pointer transition duration-200 hover:bg-blue-800"
-                          >
-                            <Link to={`/residentes/perfil/${residente.id}`}>
-                                <MdEdit className="inline-block mb-1 mr-1" />
-                                Editar
-                            </Link>
-                          </button>
+                          <BotonEditarResidente onClick={() => {
+                            setResidenteEditar(residente);
+                            setOpenEditModal(true);
+                          }} />
                           <button 
                             className="text-slate-100 bg-red-600 px-2 py-1 rounded-lg  flex items-center justify-center gap-1 mx-auto cursor-pointer transition duration-200 hover:bg-red-800"
                             onClick={() => handleDelete(residente.id)}
@@ -114,7 +131,16 @@ export const ResidentesPanel = () => {
                 </tbody>
             </table>
           </div>
-            </motion.div>
+        </motion.div>
+        <ModalEditarResidente 
+          isOpen={openEditModal} 
+          onClose={() => setOpenEditModal(false)} 
+          onSuccess={() => {
+            setOpenEditModal(false);
+            window.location.reload();
+          }}
+          residente={residenteEditar}
+        />
         </section>
     ):(<SinResultados data={"residentes"} />)}
     </>

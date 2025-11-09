@@ -87,6 +87,54 @@ export const getResidenteById = async (req, res, next) => {
     }
 };
 
+export const createResidente = async (req, res, next) => {
+    try {
+        const { nombre, apellido, rut, email, casa, es_representante, activo } = req.body;
+        if (!nombre || !apellido || !rut || !email || !casa) {
+            return res.status(400).json({
+                code: 400,
+                message: "Todos los campos obligatorios deben ser completados."
+            });
+        }
+
+        let casaObj = await Casas.findOne({ where: { nombre: casa } });
+        if (!casaObj) {
+            casaObj = await Casas.create({ nombre: casa });
+        }
+
+        const nuevoResidente = await Residente.create({
+            nombre,
+            apellido,
+            rut,
+            email,
+            id_casa: casaObj.id,
+            es_representante: !!es_representante,
+            activo: activo !== undefined ? !!activo : true
+        });
+
+        res.status(201).json({
+            code: 201,
+            message: "Residente creado exitosamente",
+            data: {
+                id: nuevoResidente.id,
+                nombre: nuevoResidente.nombre,
+                apellido: nuevoResidente.apellido,
+                rut: nuevoResidente.rut,
+                email: nuevoResidente.email,
+                casa: casaObj.nombre,
+                id_casa: nuevoResidente.id_casa,
+                es_representante: nuevoResidente.es_representante,
+                activo: nuevoResidente.activo,
+                createdAt: nuevoResidente.createdAt,
+                updatedAt: nuevoResidente.updatedAt
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
+
 export const updateResidente = async (req, res, next) => {
     try {
         const { id } = req.params;
