@@ -239,7 +239,6 @@ export const enviarAviso = async(req, res, next) =>{
                     id_casa: casa
                 }
             })
-            console.log(representante);
             const { email, nombre, apellido } = representante
             const nombreCompleto = `${nombre} ${apellido}`
 
@@ -250,6 +249,33 @@ export const enviarAviso = async(req, res, next) =>{
             code: 200,
             message: "Email enviado correctamente",
         });
+    } catch (error) {
+        console.log(error);
+        next();
+    }
+};
+
+export const getAllCasasAndResidentes = async (req, res, next) => {
+    try {
+        const casas = await Casas.findAll({
+            include: [
+                {
+                    model: Residente,
+                    as: "casas_residente",
+                },
+            ],
+        });
+
+        if (!casas) {
+            throw new Error("No hay casas registrados");
+        }
+
+        res.status(200).json({
+            code: 200,
+            message: "Casas y residentes encontrados con éxito",
+            data: casas,
+        });
+
     } catch (error) {
         console.log(error);
         next();

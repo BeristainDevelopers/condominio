@@ -7,34 +7,41 @@ import { Casas } from "../models/Casas.model.js";
 import { GastoComun } from "../models/GastosComunes.model.js";
 import { enviarMailGastoComun } from "../services/email.services.js";
 import { Residente } from "../models/Residentes.model.js";
+import { sequelize } from "../database/database.js";
 import fs from "fs";
-
 
 const __dirname = getCurrentDirectory(fileURLToPath(import.meta.url));
 
 export const generarGastosComunes = async (req, res, next) => {
     try {
-
-        console.log(req.body)
         const { fondo_reserva, gasto_comun, gastos_extras, fecha } = req.body;
-        console.log("CONTROLER")
-        const fechaArray = fecha.split("-")
-        const year = fechaArray[0]
-        const mes = fechaArray[1]
-        const dia = fechaArray[2]
+        const fechaArray = fecha.split("-");
+        const year = fechaArray[0];
+        const mes = fechaArray[1];
+        const dia = fechaArray[2];
+
+        const mesesNombres = {
+            "1": "Enero",
+            "2": "Febrero",
+            "3": "Marzo",
+            "4": "Abril",
+            "5": "Mayo",
+            "6": "Junio",
+            "7": "Julio",
+            "8": "Agosto",
+            "9": "Septiembre",
+            "10": "Octubre",
+            "11": "Noviembre",
+            "12": "Diciembre",
+        };
 
         let extrasParseados = [];
 
         extrasParseados = JSON.parse(gastos_extras);
 
         const casas = await Casas.findAll({
-            where:{
-                id: 11
-            },
-            raw:true
+            raw: true,
         });
-
-        console.log(casas)
 
         const resumenFinal = casas.map((casa) => {
             const gastosParaCasa = extrasParseados
@@ -54,11 +61,10 @@ export const generarGastosComunes = async (req, res, next) => {
         });
 
         for (const casa of resumenFinal) {
-
             const datos = {
-                fecha_informe: "22/10/2025",
+                fecha_informe: `${dia}/${mes}/${year}`,
                 casa: casa.casa,
-                mes_gasto: "Enero",
+                mes_gasto: mesesNombres[mes],
                 gastos: [
                     {
                         nombre: "Fondo Reserva",
@@ -85,32 +91,42 @@ export const generarGastosComunes = async (req, res, next) => {
             };
 
             const html = generarTemplateGastoComunPDF(datos);
-            const rutaRelativa = path.join("upload", `${datos.casa}-${datos.mes_gasto}-${year}.pdf`);
+            const rutaRelativa = path.join(
+                "upload",
+                `${datos.casa}-${datos.mes_gasto}-${year}.pdf`
+            );
             const rutaAbsoluta = path.join(__dirname, "../", rutaRelativa);
 
             await generarPDF(html, rutaAbsoluta);
 
             const residente = await Residente.findOne({
-                raw:true,
+                raw: true,
                 where: {
-                    id_casa:casa.casa_id,
-                    es_representante: true
-                }
-            })
+                    id_casa: casa.casa_id,
+                    es_representante: true,
+                },
+            });
 
-            const { nombre, apellido, email } = residente
-            const nombreCompleto = `${nombre} ${apellido}`
-            const asunto = `Gasto Comun Casa ${casa.casa} ${mes} ${year}`
-            
-            await enviarMailGastoComun(email, asunto, nombreCompleto, rutaAbsoluta, dia, mes, year)
+            const { nombre, apellido, email } = residente;
+            const nombreCompleto = `${nombre} ${apellido}`;
+            const asunto = `Gasto Comun Casa ${casa.casa} - ${mesesNombres[mes]} de ${year}`;
+
+            await enviarMailGastoComun(
+                email,
+                asunto,
+                nombreCompleto,
+                rutaAbsoluta,
+                mesesNombres[mes],
+                year
+            );
 
             await GastoComun.create({
                 casa: casa.casa_id,
                 mes,
                 year,
                 ruta_pdf: rutaRelativa,
-                estado: "enviado"
-            }) 
+                estado: "enviado",
+            });
         }
 
         return res.status(201).json({
@@ -123,6 +139,65 @@ export const generarGastosComunes = async (req, res, next) => {
     }
 };
 
+export const enviarGastoComunPorMail = async(req, res, next) => {
+    try {
+        const mesesNombres = {
+            "1": "Enero",
+            "2": "Febrero",
+            "3": "Marzo",
+            "4": "Abril",
+            "5": "Mayo",
+            "6": "Junio",
+            "7": "Julio",
+            "8": "Agosto",
+            "9": "Septiembre",
+            "10": "Octubre",
+            "11": "Noviembre",
+            "12": "Diciembre",
+        };
+        const { idDocumento } = req.params
+
+        const documento = await GastoComun.findOne({
+            where:{
+                id: idDocumento
+            }
+        })
+
+        const rutaAbsoluta = `src/${documento.ruta_pdf}`
+        const casa = documento.casa
+        const mes = documento.mes
+        const año = documento.year
+
+        const representante = await Residente.findOne({
+            where:{
+                id_casa: casa,
+                es_representante: true
+            }
+        })
+
+        const emailRepresentante = representante.email
+        const nombreCompleto = `${representante.nombre} ${representante.apellido}`
+        const asunto = `Re-Envío Gastos Comunes ${mesesNombres[mes]} de ${año}`
+
+        await enviarMailGastoComun(
+                emailRepresentante,
+                asunto,
+                nombreCompleto,
+                rutaAbsoluta,
+                mesesNombres[mes],
+                año
+            );
+
+        return res.status(200).json({
+            code: 200,
+            message: "Gasto común enviado exitosamente.",
+        });
+    } catch (error) {
+        console.error("Error al crear gasto común:", error);
+        next(error);
+    }
+}
+
 export const getAllCasas = async (req, res, next) => {
     try {
         const casas = await Casas.findAll();
@@ -131,6 +206,57 @@ export const getAllCasas = async (req, res, next) => {
             code: 200,
             message: "Casas obtenidas exitosamente",
             data: casas,
+        });
+    } catch (error) {
+        console.error("Error al crear gasto común:", error);
+        next(error);
+    }
+};
+
+export const getAllGastosComunes = async (req, res, next) => {
+    try {
+        const gastosComunes = await GastoComun.findAll({
+            include: [
+                {
+                    model: Casas,
+                    as: "gasto_casa",
+                },
+            ],
+        });
+
+        const years = await GastoComun.findAll({
+            attributes: [
+                [sequelize.fn("DISTINCT", sequelize.col("year")), "year"],
+            ],
+            raw: true,
+        });
+
+        const meses = [
+            { id: 1, nombre: "Enero" },
+            { id: 2, nombre: "Febrero" },
+            { id: 3, nombre: "Marzo" },
+            { id: 4, nombre: "Abril" },
+            { id: 5, nombre: "Mayo" },
+            { id: 6, nombre: "Junio" },
+            { id: 7, nombre: "Julio" },
+            { id: 8, nombre: "Agosto" },
+            { id: 9, nombre: "Septiembre" },
+            { id: 10, nombre: "Octubre" },
+            { id: 11, nombre: "Noviembre" },
+            { id: 12, nombre: "Diciembre" }
+        ]
+
+        const documentos = {
+            gastosComunes,
+            meses,
+            years
+        }
+
+
+        return res.status(200).json({
+            code: 200,
+            message: "gastos comunes obtenidos exitosamente",
+            data: documentos,
         });
     } catch (error) {
         console.error("Error al crear gasto común:", error);

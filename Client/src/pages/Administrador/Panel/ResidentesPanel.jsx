@@ -19,7 +19,7 @@ export const ResidentesPanel = () => {
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [residenteEditar, setResidenteEditar] = useState(null);
-  const { residentes, loading } = useResidentes();
+  const { residentes, loading, fetchResidentes } = useResidentes();
   const { handleDelete } = useDeleteResidente(() => window.location.reload());
 
   const residentesFiltrados =
@@ -70,7 +70,6 @@ export const ResidentesPanel = () => {
               onClose={() => setOpenCreateModal(false)} 
               onSuccess={() => {
                 setOpenCreateModal(false);
-                window.location.reload();
               }}
             />
             
@@ -137,7 +136,7 @@ export const ResidentesPanel = () => {
           onClose={() => setOpenEditModal(false)} 
           onSuccess={() => {
             setOpenEditModal(false);
-            window.location.reload();
+            fetchResidentes();
           }}
           residente={residenteEditar}
         />

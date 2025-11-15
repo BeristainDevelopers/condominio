@@ -28,7 +28,7 @@ app.use(
 );
 
 //Carpeta Publica
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/upload", express.static(path.join(__dirname, "upload")));
 
 //Endpoints
 app.use("/api/v1/auth", authRoutes);

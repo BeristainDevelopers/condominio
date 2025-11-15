@@ -67,13 +67,19 @@ export const enviarMailAviso = (email, asunto, titulo, nombreCompleto, mensaje)=
     }
 }
 
-export const enviarMailGastoComun = (email, asunto, nombreCompleto, rutaPdf, dia, mes, año)=>{
+export const enviarMailGastoComun = (email, asunto, nombreCompleto, rutaPdf, mes, año)=>{
     try {
+        const fecha = new Date();
+        fecha.toLocaleDateString("es-CL", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        });
         const mailOptions = {
             from: "Comunidad Habitacional Salvador 1050",
             to: `${email}`,
             subject: asunto,
-            html: crearTemplateGastosComunes(nombreCompleto, dia, mes, año),
+            html: crearTemplateGastosComunes(nombreCompleto, mes, año, fecha),
             attachments: [
                 {
                     filename: `Gasto_Comun_${mes}_${año}.pdf`,

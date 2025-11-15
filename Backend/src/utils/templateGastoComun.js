@@ -1,4 +1,4 @@
-export const crearTemplateGastosComunes = (nombreCompleto, dia, mes, año) => {
+export const crearTemplateGastosComunes = (nombreCompleto, mes, año, fecha) => {
   const template = `
     <html>
       <head>
@@ -61,11 +61,12 @@ export const crearTemplateGastosComunes = (nombreCompleto, dia, mes, año) => {
           <div class="content">
             <p><strong>Gastos Comunes - ${mes} ${año}</strong></p>
             <p>Estimado/a <strong>${nombreCompleto}</strong>,</p>
-            <p>Se adjunta el detalle correspondiente a los gastos comunes del mes de <strong>${mes}</strong>, con fecha <strong>${dia} de ${mes} de ${año}</strong>.</p>
+            <p>Se adjunta el detalle correspondiente a los gastos comunes del mes de <strong>${mes}</strong>, <strong> de ${año}</strong>.</p>
             <p>Para cualquier consulta, no dude en comunicarse con la administración.</p>
             <div class="firma">
               Atentamente,<br/>
               Administración Comunidad Salvador 1050
+              Santiago, ${fecha}
             </div>
           </div>
           <div class="footer">

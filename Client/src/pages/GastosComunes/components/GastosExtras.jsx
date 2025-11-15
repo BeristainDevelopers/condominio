@@ -1,25 +1,35 @@
 import { useState, useMemo } from "react";
 import Select from "react-select";
+import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router";
+import { LoadSpinner } from "../../../components/ui/loadSpinner";
+import { wait } from "../../../utils/formatTime";
 
 // Icons
 import { MdOutlineDelete } from "react-icons/md";
 
-export const GastosExtras = ({ volver, todasLasCasas, gastoComun, fondoReserva, fecha }) => {
-    
+export const GastosExtras = ({
+    volver,
+    todasLasCasas,
+    gastoComun,
+    fondoReserva,
+    fecha,
+}) => {
     const [nombre, setNombre] = useState("");
     const [monto, setMonto] = useState("");
     const [casas, setCasas] = useState([]);
     const [aplicarATodos, setAplicarATodos] = useState(false);
     const [gastos, setGastos] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const { enqueueSnackbar } = useSnackbar();
+    const navigate = useNavigate();
 
-    
     const opcionesCasas = useMemo(() => {
         return todasLasCasas.map((casa) => ({
-        label: `Casa ${casa.nombre}`,
-        value: casa.id,
+            label: `Casa ${casa.nombre}`,
+            value: casa.id,
         }));
-        }, [todasLasCasas]);
-
+    }, [todasLasCasas]);
 
     const handleAgregar = () => {
         if (!nombre || !monto) {
@@ -28,7 +38,7 @@ export const GastosExtras = ({ volver, todasLasCasas, gastoComun, fondoReserva, 
         }
 
         const casasAplicables = aplicarATodos ? todasLasCasas : casas;
-        
+
         if (casasAplicables.length === 0) {
             alert("Debes seleccionar al menos una casa.");
             return;
@@ -37,13 +47,9 @@ export const GastosExtras = ({ volver, todasLasCasas, gastoComun, fondoReserva, 
         const nuevoGasto = {
             nombre,
             monto: Number(monto),
-            casas: casasAplicables.map((c) =>
-                aplicarATodos ? c.id : c.value
-            ),
+            casas: casasAplicables.map((c) => (aplicarATodos ? c.id : c.value)),
             fecha: new Date().toISOString(),
-            };
-
-
+        };
 
         setGastos([...gastos, nuevoGasto]);
         setNombre("");
@@ -52,38 +58,48 @@ export const GastosExtras = ({ volver, todasLasCasas, gastoComun, fondoReserva, 
         setAplicarATodos(false);
     };
 
-    const handleClick = async() =>{
+    const handleClick = async () => {
         try {
-            const formData = new FormData()
-            formData.append("gasto_comun", gastoComun)
-            formData.append("fecha", fecha)
-            formData.append("fondo_reserva", fondoReserva)
-            formData.append("gastos_extras", JSON.stringify(gastos))
-
+            setLoading(true);
+            const formData = new FormData();
+            formData.append("gasto_comun", gastoComun);
+            formData.append("fecha", fecha);
+            formData.append("fondo_reserva", fondoReserva);
+            formData.append("gastos_extras", JSON.stringify(gastos));
 
             const requestOptions = {
                 method: "POST",
-                body: formData
-            }
+                body: formData,
+            };
 
             const URL =
                 import.meta.env.VITE_APP_MODE === "desarrollo"
                     ? import.meta.env.VITE_URL_DESARROLLO
                     : import.meta.env.VITE_URL_PRODUCCION;
 
-            const response = await fetch(`${URL}/api/v1/gastos-comunes/generar-gasto-comun`, requestOptions)
-            const data = await response.json()
+            const response = await fetch(
+                `${URL}/api/v1/gastos-comunes/generar-gasto-comun`,
+                requestOptions
+            );
+            const data = await response.json();
 
+            if (data.code === 201) {
+                enqueueSnackbar(data.message, { variant: "success" });
+                await wait(2000)
+                navigate("/");
+                setLoading(false);
+            } else {
+                enqueueSnackbar(data.message, { variant: "error" });
+                setLoading(false);
+            }
         } catch (error) {
             console.log(error);
         }
-    }
+    };
 
     return (
         <div className="p-6 bg-white rounded shadow space-y-6">
-            <h2 className="text-xl font-bold text-gray-700">
-                Gastos Fijos
-            </h2>
+            <h2 className="text-xl font-bold text-gray-700">Gastos Fijos</h2>
             <div>
                 <label className="block mb-1 font-medium text-gray-600">
                     Gasto Común
@@ -206,7 +222,10 @@ export const GastosExtras = ({ volver, todasLasCasas, gastoComun, fondoReserva, 
                                         setGastos(nuevosGastos);
                                     }}
                                 >
-                                    <MdOutlineDelete size={24} className="inline-block mb-1 mr-1" />
+                                    <MdOutlineDelete
+                                        size={24}
+                                        className="inline-block mb-1 mr-1"
+                                    />
                                 </button>
                             </li>
                         ))}
@@ -224,9 +243,23 @@ export const GastosExtras = ({ volver, todasLasCasas, gastoComun, fondoReserva, 
 
                 <button
                     onClick={handleClick}
-                    className="bg-indigo-600 text-white px-4 py-2 rounded transition-colors duration-300 cursor-pointer hover:bg-indigo-800"
+                    className="bg-indigo-600 flex gap-2 justify-center items-center text-white px-4 py-2 rounded transition-colors duration-300 cursor-pointer hover:bg-indigo-800"
+                    disabled={loading}
                 >
-                    Finalizar
+                    {loading ? (
+                        <>
+                        <LoadSpinner
+                            size="10px"
+                            height="h-2"
+                            color="text-white"
+                        /> 
+                        Generando
+                        </>
+                    ) : (
+                        <>
+                            Finalizar
+                        </>
+                    )}
                 </button>
             </div>
         </div>

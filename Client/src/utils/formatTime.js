@@ -4,3 +4,4 @@ export const formatTime = (seconds) => {
     return `${minutes}:${secondsRemaining < 10 ? "0" : ""}${secondsRemaining}`;
 };
 
+export const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));

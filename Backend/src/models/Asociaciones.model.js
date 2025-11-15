@@ -26,6 +26,7 @@ Casas.hasMany(GastoComun, {
 GastoComun.belongsTo(Casas, {
     foreignKey: "casa",
     targetKey: "id",
+    as:"gasto_casa"
 });
 
 // Administracion -> Residente 
