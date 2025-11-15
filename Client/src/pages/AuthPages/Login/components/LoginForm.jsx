@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { fetchUsuario } from "../../../../store/authThunks";
 
 // Icons
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaUser } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 
 export const LoginForm = () => {
@@ -79,7 +79,7 @@ export const LoginForm = () => {
 
     return (
         <div className="bg-white p-8 rounded-lg shadow-md w-80 md:w-96">
-            <h2 className="text-2xl font-bold text-center mb-6">Iniciar Sesión</h2>
+            <h2 className="text-2xl font-bold text-center mb-6"><FaUser className="inline-block mr-2 mb-2 text-sky-700" />Iniciar Sesión</h2>
             <form onSubmit={loginUser}>
                 <div className="mb-4 ">
                     <label htmlFor="email" className="block text-gray-700">

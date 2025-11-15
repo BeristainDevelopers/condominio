@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { MdAdd } from "react-icons/md";
 
 const initialState = {
   nombre: "",
@@ -80,7 +81,7 @@ const ModalCrearResidente = ({ isOpen, onClose, onSuccess }) => {
             exit={{ y: 40, scale: 0.97, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
-            <h2 className="text-2xl font-bold mb-6 text-indigo-700 text-center">Crear Residente</h2>
+            <h2 className="text-2xl font-bold mb-6 text-indigo-700 text-center"><MdAdd className="inline-block mb-1 text-indigo-700" /> Crear Residente</h2>
             <div className="grid gap-4">
               <div>
                 <label className="block text-sm font-semibold mb-1">Nombre</label>

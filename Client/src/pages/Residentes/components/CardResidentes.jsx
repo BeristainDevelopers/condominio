@@ -70,9 +70,9 @@ export const CardResidentes = () => {
 
                                     <p className="text-[0.9rem] text-gray-600 mt-1">📞 {residente.rut}</p>
 
-                                    <p className="text-[0.9rem] text-gray-600">
+                                    <p className="text-[0.9rem] text-gray-600 ">
                                         ✉️{" "}
-                                        <a className="hover:text-indigo-900" href={`mailto:${residente.email}`}>
+                                        <a className="transition duration-200 hover:text-indigo-500 hover:underline" href={`mailto:${residente.email}`}>
                                             {residente.email}
                                         </a>
                                     </p>

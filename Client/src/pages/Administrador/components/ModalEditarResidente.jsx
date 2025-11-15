@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { MdEdit } from "react-icons/md";
 
 const initialState = {
   nombre: "",
@@ -93,7 +94,7 @@ const ModalEditarResidente = ({ isOpen, onClose, onSuccess, residente }) => {
             exit={{ y: 40, scale: 0.97, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
-            <h2 className="text-2xl font-bold mb-6 text-indigo-700 text-center">Editar Residente</h2>
+            <h2 className="text-2xl font-bold mb-6 text-indigo-700 text-center"><MdEdit className="inline-block mb-1 text-indigo-700" /> Editar Residente</h2>
             <div className="grid gap-4">
               <div>
                 <label className="block text-sm font-semibold mb-1">Nombre</label>
