@@ -59,7 +59,7 @@ export const LoginForm = () => {
                 credentials: "include"
             }
 
-            const response = await fetch("http://localhost:3000/api/v1/auth/login", requestOptions);
+            const response = await fetch("api/v1/auth/login", requestOptions);
             const data = await response.json()
             
             if (data.code === 200) {

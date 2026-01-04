@@ -57,7 +57,7 @@ export const ChangePassword = () => {
                 password: formPassword.password
             }
     
-            const data = await fetchHook("http://localhost:3000/api/v1/auth/change-password", "POST", body, token);
+            const data = await fetchHook("/api/v1/auth/change-password", "POST", body, token);
             
             if(data.code === 200){
                 enqueueSnackbar("Contraseña Modificada con éxito", { variant: "success" });

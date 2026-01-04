@@ -204,7 +204,7 @@ export const DocumentosPanel = ({setPdfSeleccionado, setRutaPdf}) => {
                                         <BotonEnviarMail idGastoComun={doc.id}/>
                                         <button
                                         onClick={() =>{ 
-                                            handlePdf(`http://localhost:3000/${doc.ruta_pdf.replace(/\\/g, "/")}`)
+                                            handlePdf(`/${doc.ruta_pdf.replace(/\\/g, "/")}`)
                                         }}
                                         className="flex items-center justify-center gap-2 text-sm bg-red-600 text-white font-semibold px-3 py-1 rounded cursor-pointer hover:bg-red-800 transition-colors duration-300 text-[1rem]"
                                     >

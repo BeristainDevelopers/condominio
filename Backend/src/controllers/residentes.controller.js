@@ -99,7 +99,7 @@ export const createResidente = async (req, res, next) => {
 
         let casaObj = await Casas.findOne({ where: { nombre: casa } });
         if (!casaObj) {
-            casaObj = await Casas.create({ nombre: casa });
+            throw new Error("No Existe la casa seleccionada");
         }
 
         const nuevoResidente = await Residente.create({

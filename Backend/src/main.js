@@ -11,7 +11,7 @@ import { errorHandler } from "./middlewares/errors.middlewares.js";
 import * as path from "path";
 import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-export const app = express();
+export const app = express()
 
 //MIDDLEWARES
 app.use(express.json());

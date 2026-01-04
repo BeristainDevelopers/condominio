@@ -48,7 +48,11 @@ const ModalEditarResidente = ({ isOpen, onClose, onSuccess, residente }) => {
     setError("");
     setLoading(true);
     try {
-      const URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+       const URL =
+                import.meta.env.VITE_APP_MODE === "desarrollo"
+                    ? import.meta.env.VITE_URL_DESARROLLO
+                    : import.meta.env.VITE_URL_PRODUCCION;
+                    
       const response = await fetch(`${URL}/api/v1/residentes/update-residente/${residente.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

@@ -29,7 +29,7 @@ export const EmailForm = ({ handleEmailSent, saveTimeNow, timeLeft }) => {
                 email: formUser.email,
             }
 
-            const data = await fetchHook("http://localhost:3000/api/v1/auth/recover-password", "POST", body);
+            const data = await fetchHook("/api/v1/auth/recover-password", "POST", body);
 
             if(data.code === 200){
                 enqueueSnackbar("Correo enviado. Sigue las instrucciones para restablecer tu contraseña", { variant: "success" });

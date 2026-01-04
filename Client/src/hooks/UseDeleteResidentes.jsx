@@ -11,8 +11,13 @@ export const useDeleteResidente = (onSuccess) => {
 		});
 		if (!isConfirmed) return;
 		try {
+            const URL =
+                import.meta.env.VITE_APP_MODE === "desarrollo"
+                    ? import.meta.env.VITE_URL_DESARROLLO
+                    : import.meta.env.VITE_URL_PRODUCCION;
+
 			const res = await fetch(
-				`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/v1/residentes/delete-residente/${id}`,
+				`${URL}/api/v1/residentes/delete-residente/${id}`,
 				{
 					method: "DELETE",
 				}

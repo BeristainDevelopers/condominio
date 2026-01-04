@@ -54,7 +54,7 @@ export const UpdatePasswordForm = () => {
         
             setIsLoading(true);
 
-            const data = await fetchHook("http://localhost:3000/api/v1/auth/", "POST", formUpdatePassword);
+            const data = await fetchHook("/api/v1/auth/", "POST", formUpdatePassword);
             if (data.token) {
                 localStorage.setItem("token", data.token);
                 enqueueSnackbar("Sesión iniciada correctamente", { variant: "success" });
