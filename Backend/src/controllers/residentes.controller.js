@@ -19,7 +19,8 @@ export const getAllResidentes = async (req, res, next) => {
             apellido: residente.apellido,
             rut: residente.rut,
             email: residente.email,
-            casa:residente.residente_casa?.nombre,
+            telefono: residente.telefono,
+            casa: residente.residente_casa?.nombre,
             id_casa: residente.id_casa,
             es_representante: residente.es_representante,
             activo: residente.activo,
@@ -64,7 +65,8 @@ export const getResidenteById = async (req, res, next) => {
             apellido: residente.apellido,
             rut: residente.rut,
             email: residente.email,
-            casa:residente.residente_casa?.nombre,
+            telefono: residente.telefono,
+            casa: residente.residente_casa?.nombre,
             id_casa: residente.id_casa,
             es_representante: residente.es_representante,
             activo: residente.activo,
@@ -89,7 +91,7 @@ export const getResidenteById = async (req, res, next) => {
 
 export const createResidente = async (req, res, next) => {
     try {
-        const { nombre, apellido, rut, email, casa, es_representante, activo } = req.body;
+        const { nombre, apellido, rut, email, telefono, casa, es_representante, activo } = req.body;
         if (!nombre || !apellido || !rut || !email || !casa) {
             return res.status(400).json({
                 code: 400,
@@ -107,6 +109,7 @@ export const createResidente = async (req, res, next) => {
             apellido,
             rut,
             email,
+            telefono,
             id_casa: casaObj.id,
             es_representante: !!es_representante,
             activo: activo !== undefined ? !!activo : true
@@ -121,6 +124,7 @@ export const createResidente = async (req, res, next) => {
                 apellido: nuevoResidente.apellido,
                 rut: nuevoResidente.rut,
                 email: nuevoResidente.email,
+                telefono: nuevoResidente.telefono,
                 casa: casaObj.nombre,
                 id_casa: nuevoResidente.id_casa,
                 es_representante: nuevoResidente.es_representante,
@@ -143,6 +147,7 @@ export const updateResidente = async (req, res, next) => {
             apellido,
             rut,
             email,
+            telefono,
             id_casa,
             es_representante,
             activo
@@ -163,6 +168,7 @@ export const updateResidente = async (req, res, next) => {
         residente.apellido = apellido ?? residente.apellido;
         residente.rut = rut ?? residente.rut;
         residente.email = email ?? residente.email;
+        residente.telefono = telefono ?? residente.telefono;
         residente.id_casa = id_casa ?? residente.id_casa;
         residente.es_representante = es_representante ?? residente.es_representante;
         residente.activo = activo ?? residente.activo;
@@ -185,6 +191,7 @@ export const updateResidente = async (req, res, next) => {
             apellido: residenteActualizado.apellido,
             rut: residenteActualizado.rut,
             email: residenteActualizado.email,
+            telefono: residenteActualizado.telefono,
             casa: residenteActualizado.residente_casa?.nombre,
             id_casa: residenteActualizado.id_casa,
             es_representante: residenteActualizado.es_representante,

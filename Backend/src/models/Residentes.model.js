@@ -20,6 +20,10 @@ export const Residente = sequelize.define('Residente', {
         allowNull: false,
         unique: true
     },
+    telefono: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+    },
     email: {
         type: DataTypes.STRING(100),
         allowNull: false,
