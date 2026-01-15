@@ -15,7 +15,6 @@ export const AdministradorPanel = () => {
 
     const menuItems = [
         { label: "Residentes", icon: <MdPeople />, component: <ResidentesPanel /> },
-        { label: "Pagos", icon: <MdAttachMoney /> },
         { label: "Cerrar sesión", icon: <MdLogout />, component: <Logout /> },
     ];
 

@@ -11,8 +11,9 @@ import BotonEditarResidente from "../components/BotonEditarResidente";
 // Contexts
 import { useResidentes } from "../../../context/ResidentesContext";
 // Icons
-import { MdPerson, MdEmail, MdHouse, MdVerifiedUser, MdDelete } from "react-icons/md";
+import { MdPerson, MdEmail, MdHouse, MdVerifiedUser, MdDelete, MdPhone } from "react-icons/md";
 import ModalEditarResidente from "../components/ModalEditarResidente";
+import { formatPhone } from "../../../utils/formatPhone";
 
 export const ResidentesPanel = () => {
   const [filtroCasa, setFiltroCasa] = useState("all");
@@ -21,6 +22,7 @@ export const ResidentesPanel = () => {
   const [residenteEditar, setResidenteEditar] = useState(null);
   const { residentes, loading, fetchResidentes } = useResidentes();
   const { handleDelete } = useDeleteResidente(() => window.location.reload());
+  console.log(residentes);
 
   const residentesFiltrados =
       filtroCasa === "all"
@@ -84,6 +86,7 @@ export const ResidentesPanel = () => {
                 <th className="px-4 py-3"><MdPerson className="inline-block mr-1 mb-1" />Nombre</th>
                 <th className="px-4 py-3"><MdHouse className="inline-block mr-1 mb-1" />Casa</th>
                 <th className="px-4 py-3"><MdEmail className="inline-block mr-1 mb-1" />Email</th>
+                <th className="px-4 py-3"><MdPhone className="inline-block mr-1 mb-1" />Teléfono</th>
                 <th className="px-4 py-3"><MdVerifiedUser className="inline-block mr-1 mb-1" />Representante</th>
                 <th className="px-4 py-3"><MdVerifiedUser className="inline-block mr-1 mb-1" />Activo</th>
                 <th className="px-4 py-3">Acción</th>
@@ -99,6 +102,9 @@ export const ResidentesPanel = () => {
                     <td className="px-4 py-3">{residente.casa}</td>
                     <td className="px-4 py-3 text-blue-600 hover:underline">
                       <a href={`mailto:${residente.email}`}>{residente.email}</a>
+                    </td>
+                    <td className="px-4 py-3">
+                      {formatPhone(residente.telefono)}
                     </td>
                     <td className="px-4 py-3">
                       <span className={residente.es_representante ? "text-green-600" : "text-red-600"}>

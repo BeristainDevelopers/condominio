@@ -7,6 +7,7 @@ const initialState = {
   apellido: "",
   rut: "",
   email: "",
+  telefono: "",
   casa: "",
   es_representante: false,
   activo: true,
@@ -24,6 +25,7 @@ const ModalEditarResidente = ({ isOpen, onClose, onSuccess, residente }) => {
         apellido: residente.apellido || "",
         rut: residente.rut || "",
         email: residente.email || "",
+        telefono: residente.telefono || "",
         casa: residente.casa || "",
         es_representante: !!residente.es_representante,
         activo: !!residente.activo,
@@ -61,6 +63,7 @@ const ModalEditarResidente = ({ isOpen, onClose, onSuccess, residente }) => {
           apellido: form.apellido,
           rut: form.rut,
           email: form.email,
+          telefono: form.telefono,
           casa: form.casa,
           es_representante: form.es_representante,
           activo: form.activo,
@@ -141,6 +144,19 @@ const ModalEditarResidente = ({ isOpen, onClose, onSuccess, residente }) => {
                   value={form.email}
                   onChange={handleChange}
                   required
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">Teléfono</label>
+                <input
+                  type="text"
+                  name="telefono"
+                  value={form.telefono}
+                  onChange={handleChange}
+                  required
+                  maxLength={12}
+                  placeholder="+56 9 9525 9523"
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
