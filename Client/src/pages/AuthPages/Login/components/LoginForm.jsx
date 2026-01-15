@@ -59,7 +59,12 @@ export const LoginForm = () => {
                 credentials: "include"
             }
 
-            const response = await fetch("api/v1/auth/login", requestOptions);
+            const URL =
+                    import.meta.env.VITE_APP_MODE === "desarrollo"
+                        ? import.meta.env.VITE_URL_DESARROLLO
+                        : import.meta.env.VITE_URL_PRODUCCION;
+
+            const response = await fetch(`${URL}/api/v1/auth/login`, requestOptions);
             const data = await response.json()
             
             if (data.code === 200) {
