@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+// Formatters
+import { formatPhone } from "../../../utils/formatPhone";
+import { formatRut } from "../../../utils/formatRut";
 // Hooks
 import { useDeleteResidente } from "../../../hooks/UseDeleteResidentes";
 // Components
@@ -13,7 +16,7 @@ import { useResidentes } from "../../../context/ResidentesContext";
 // Icons
 import { MdPerson, MdEmail, MdHouse, MdVerifiedUser, MdDelete, MdPhone } from "react-icons/md";
 import ModalEditarResidente from "../components/ModalEditarResidente";
-import { formatPhone } from "../../../utils/formatPhone";
+
 
 export const ResidentesPanel = () => {
   const [filtroCasa, setFiltroCasa] = useState("all");
@@ -97,7 +100,7 @@ export const ResidentesPanel = () => {
                   <tr key={residente.id} className="hover:bg-gray-100 transition-color duration-200">
                     <td className="px-4 py-3">
                       {residente.nombre} {residente.apellido}
-                      <div className="text-xs text-gray-500">{residente.rut}</div>
+                      <div className="text-xs text-gray-500">{formatRut(residente.rut)}</div>
                     </td>
                     <td className="px-4 py-3">{residente.casa}</td>
                     <td className="px-4 py-3 text-blue-600 hover:underline">

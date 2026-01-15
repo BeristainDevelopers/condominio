@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from "react";
+// Formatters
+import { formatPhone } from "../../../utils/formatPhone";
+import { formatRut } from "../../../utils/formatRut";
+// Icons
+import { HiOutlineIdentification } from "react-icons/hi";
 
 export const CardResidentes = () => {
     const [residentes, setResidentes] = useState([]);
@@ -58,7 +63,7 @@ export const CardResidentes = () => {
                                 >
                                     <div className="flex justify-between items-center">
                                         <p className="font-semibold text-gray-900 text-[1rem]">
-                                            {residente.nombre} {residente.apellido}
+                                            {residente.nombre} {residente.apellido} 
                                         </p>
 
                                         {residente.es_representante && (
@@ -68,7 +73,11 @@ export const CardResidentes = () => {
                                         )}
                                     </div>
 
-                                    <p className="text-[0.9rem] text-gray-600 mt-1">📞 {residente.rut}</p>
+                                    <p className="text-[0.9rem] text-gray-600 mt-1">
+                                        <HiOutlineIdentification className="inline-block mb-1 mr-2 text-lg" /> 
+                                        {formatRut(residente.rut)}
+                                    </p>
+                                    <p className="text-[0.9rem] text-gray-600">📞 {formatPhone(residente.telefono)}</p>
 
                                     <p className="text-[0.9rem] text-gray-600 ">
                                         ✉️{" "}
@@ -76,7 +85,6 @@ export const CardResidentes = () => {
                                             {residente.email}
                                         </a>
                                     </p>
-
 
                                 </div>
                             ))}
