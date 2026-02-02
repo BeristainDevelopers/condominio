@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { enviarGastoComunPorMail, generarGastosComunes, getAllCasas, getAllGastosComunes } from "../controllers/gastosComunes.controller.js";
+import { enviarGastoComunPorMail, generarGastosComunes, generarInformGlobal, getAllCasas, getAllGastosComunes } from "../controllers/gastosComunes.controller.js";
 import { issueTokenMiddleware, verifyTokenMiddleware } from "../middlewares/login.middleware.js";
 
 
@@ -10,6 +10,7 @@ router.get("/get-gastos-comunes", getAllGastosComunes )
 router.post("/reenviar-gastos-comunes/:idDocumento",  enviarGastoComunPorMail)
 
 router.post("/generar-gasto-comun", generarGastosComunes)
+router.post("/generar-informe-global", generarInformGlobal)
 
 
 

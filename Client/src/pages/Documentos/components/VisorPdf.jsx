@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
 
 export const VisorPdf = ({ rutaPdf, setPdfSeleccionado }) => {
+        console.log("Ruta", rutaPdf)
+        console.log("seleccionado", setPdfSeleccionado);
     return (
         // Fondo oscuro tipo modal
+        
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[9999] flex items-center justify-center p-6">
             
             {/* Contenedor del visor */}
@@ -23,7 +26,7 @@ export const VisorPdf = ({ rutaPdf, setPdfSeleccionado }) => {
 
                 {/* Visor PDF */}
                 <object
-                    data={rutaPdf}
+                    data={`http://localhost:3000${rutaPdf}`}
                     type="application/pdf"
                     className="w-full h-full"
                 />

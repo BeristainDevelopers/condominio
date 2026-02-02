@@ -173,6 +173,7 @@ export const GastosExtras = ({
                         onChange={setCasas}
                         placeholder="Selecciona casas"
                         className="text-sm"
+                        required
                     />
                 )}
             </div>

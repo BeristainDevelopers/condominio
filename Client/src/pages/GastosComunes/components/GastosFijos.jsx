@@ -9,9 +9,21 @@ export const GastosFijos = ({
     setFecha,
     fecha
 }) => {
+
+    const [error, setError] = useState({
+        fecha: false,
+        gastoComun: false,
+        fondoReserva: false,
+    });
+
     const handleSiguiente = () => {
-        if (!gastoComun || !fondoReserva) {
-            alert("Por favor, completa ambos campos.");
+
+        if (!gastoComun || !fondoReserva || !fecha) {
+            setError({
+                fecha: !fecha,
+                gastoComun: !gastoComun, 
+                fondoReserva: !fondoReserva,
+            });
             return;
         }
         siguiente();
@@ -32,7 +44,13 @@ export const GastosFijos = ({
                     className="w-full p-2 border rounded"
                     value={fecha}
                     onChange={(e) => setFecha(e.target.value)}
+
                 />
+                {error.fecha && (
+                    <p className="text-red-500 text-sm mt-1 font-bold">
+                        La fecha es obligatoria.
+                    </p>
+                )}
             </div>
 
             <div>
@@ -46,6 +64,11 @@ export const GastosFijos = ({
                     onChange={(e) => setGastoComun(e.target.value)}
                     placeholder="Ej: 25000"
                 />
+                {error.gastoComun && (
+                    <p className="text-red-500 text-sm mt-1 font-bold">
+                        El Monto De los Gastos Comunes es obligatorio.
+                    </p>
+                )}
             </div>
 
             <div>
@@ -58,7 +81,12 @@ export const GastosFijos = ({
                     value={fondoReserva}
                     onChange={(e) => setFondoReserva(e.target.value)}
                     placeholder="Ej: 5000"
-                />
+            />
+            {error.fondoReserva && (
+                    <p className="text-red-500 text-sm mt-1 font-bold">
+                        El Monto del Fondo de Reserva es obligatorio.
+                    </p>
+            )}
             </div>
 
             <div className="flex justify-end">
