@@ -7,3 +7,8 @@ export const validarPassword = (password) => {
     const regex = /^(?=(?:.*[A-Za-z]){4})(?=(?:.*\d){4})(?=(?:.*[@#$+=&]){1})[A-Za-z\d@#$+=&]{9,}$/;
     return regex.test(password);
 }
+
+export const soloNumeros = (valor) => {
+    const regex = /^\d+$/;
+    return regex.test(valor);
+}

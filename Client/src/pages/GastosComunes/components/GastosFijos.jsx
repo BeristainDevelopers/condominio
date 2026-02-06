@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { soloNumeros } from "../../../utils/validators";
 
 export const GastosFijos = ({
     siguiente,
@@ -17,7 +18,6 @@ export const GastosFijos = ({
     });
 
     const handleSiguiente = () => {
-
         if (!gastoComun || !fondoReserva || !fecha) {
             setError({
                 fecha: !fecha,
@@ -29,8 +29,10 @@ export const GastosFijos = ({
         siguiente();
     };
 
+    const isDirty = gastoComun && fondoReserva && fecha;
+
     return (
-        <div className="p-6 bg-white rounded shadow space-y-6">
+        <div className="p-6 bg-white rounded shadow space-y-6 border border-gray-100">
             <h2 className="text-xl font-bold text-gray-700">
                 Paso 1: Fecha y Gastos Fijos
             </h2>
@@ -41,7 +43,7 @@ export const GastosFijos = ({
                 </label>
                 <input
                     type="date"
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border border-gray-300 rounded"
                     value={fecha}
                     onChange={(e) => setFecha(e.target.value)}
 
@@ -58,11 +60,16 @@ export const GastosFijos = ({
                     Gasto común fijo (por casa):
                 </label>
                 <input
-                    type="number"
-                    className="w-full p-2 border rounded"
+                    type="text"
+                    className="w-full p-2 border border-gray-300 rounded"
                     value={gastoComun}
-                    onChange={(e) => setGastoComun(e.target.value)}
+                    onChange={(e) => {
+                        if (e.target.value === '' || soloNumeros(e.target.value)) {
+                            setGastoComun(e.target.value);
+                        }
+                    }}
                     placeholder="Ej: 25000"
+                    inputMode="numeric"
                 />
                 {error.gastoComun && (
                     <p className="text-red-500 text-sm mt-1 font-bold">
@@ -76,12 +83,17 @@ export const GastosFijos = ({
                     Fondo de reserva:
                 </label>
                 <input
-                    type="number"
-                    className="w-full p-2 border rounded"
+                    type="text"
+                    className="w-full p-2 border border-gray-300 rounded"
                     value={fondoReserva}
-                    onChange={(e) => setFondoReserva(e.target.value)}
+                    onChange={(e) => {
+                        if (e.target.value === '' || soloNumeros(e.target.value)) {
+                            setFondoReserva(e.target.value);
+                        }
+                    }}
                     placeholder="Ej: 5000"
-            />
+                    inputMode="numeric"
+                />
             {error.fondoReserva && (
                     <p className="text-red-500 text-sm mt-1 font-bold">
                         El Monto del Fondo de Reserva es obligatorio.
@@ -92,7 +104,8 @@ export const GastosFijos = ({
             <div className="flex justify-end">
                 <button
                     onClick={handleSiguiente}
-                    className="bg-indigo-600 text-white px-4 py-2 rounded transition-colors duration-300 cursor-pointer hover:bg-indigo-800"
+                    disabled={!isDirty}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded transition-colors duration-300 cursor-pointer hover:bg-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     Siguiente
                 </button>

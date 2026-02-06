@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { soloNumeros } from "../../../utils/validators";
 import Select from "react-select";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router";
@@ -98,7 +99,7 @@ export const GastosExtras = ({
     };
 
     return (
-        <div className="p-6 bg-white rounded shadow space-y-6">
+        <div className="p-6 bg-white rounded shadow border border-gray-100 space-y-6">
             <h2 className="text-xl font-bold text-gray-700">Gastos Fijos</h2>
             <div>
                 <label className="block mb-1 font-medium text-gray-600">
@@ -106,7 +107,7 @@ export const GastosExtras = ({
                 </label>
                 <input
                     type="text"
-                    className="w-full p-2 border rounded bg-gray-300"
+                    className="w-full p-2 border border-gray-300 rounded bg-gray-100"
                     value={gastoComun}
                     disabled
                 />
@@ -117,7 +118,7 @@ export const GastosExtras = ({
                 </label>
                 <input
                     type="text"
-                    className="w-full p-2 border rounded bg-gray-300"
+                    className="w-full p-2 border border-gray-300 rounded bg-gray-100"
                     value={fondoReserva}
                     disabled
                 />
@@ -132,7 +133,7 @@ export const GastosExtras = ({
                 </label>
                 <input
                     type="text"
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border border-gray-300 rounded"
                     value={nombre}
                     onChange={(e) => setNombre(e.target.value)}
                     placeholder="Ej: Reparación luminarias"
@@ -144,10 +145,16 @@ export const GastosExtras = ({
                     Monto
                 </label>
                 <input
-                    type="number"
-                    className="w-full p-2 border rounded"
+                    type="text"
+                    className="w-full p-2 border border-gray-300 rounded"
+                    placeholder="Ej: 40000"
                     value={monto}
-                    onChange={(e) => setMonto(e.target.value)}
+                    onChange={(e) => {
+                        if (e.target.value === '' || soloNumeros(e.target.value)) {
+                            setMonto(e.target.value);
+                        }
+                    }}
+                    inputMode="numeric"
                 />
             </div>
 
@@ -232,6 +239,17 @@ export const GastosExtras = ({
                         ))}
                     </ul>
                 )}
+            </div>
+
+            <div className="flex flex-col gap-1">
+                <label className="font-medium text-gray-600">Agregar nota (opcional):</label>
+                <textarea
+                    className="w-full h-[150px] p-2 border border-gray-300 rounded font-medium text-gray-600"
+                    style={{ resize: 'none' }}
+                    /* value={nota}
+                    onChange={(e) => setNota(e.target.value)} */
+                    placeholder="Escribe una nota aquí..."
+                />
             </div>
 
             <div className="flex justify-between mt-6">
