@@ -58,7 +58,7 @@ export const GastosExtras = ({
         setNombre("");
         setMonto("");
         setCasas([]);
-        setAplicarATodos(false);
+        setAplicarATodos(false);       
     };
 
     const handleClick = async () => {

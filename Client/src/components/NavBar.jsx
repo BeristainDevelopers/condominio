@@ -8,6 +8,7 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { BsCashCoin } from "react-icons/bs";
 import { RiAdminFill } from "react-icons/ri";
 import { MdMenu, MdClose } from "react-icons/md";
+import { AiOutlineGlobal } from "react-icons/ai";
 
 export const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -32,6 +33,11 @@ export const Navbar = () => {
                     <li>
                         <Link to="/gastos-comunes" className={`text-lg transition-all duration-300 ${location.pathname.startsWith("/gastos-comunes") ? "text-indigo-700 font-bold text-xl" : "text-gray-700 font-semibold hover:text-gray-400"}`}>
                             <BsCashCoin className="inline-block mb-1 mr-1" />Gastos-Comunes
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/gastos-globales" className={`text-lg transition-all duration-300 ${location.pathname.startsWith("/gastos-globales") ? "text-indigo-700 font-bold text-xl" : "text-gray-700 font-semibold hover:text-gray-400"}`}>
+                            <AiOutlineGlobal className="inline-block mb-1 mr-1" />Gastos-Comunes
                         </Link>
                     </li>
                     <li>
