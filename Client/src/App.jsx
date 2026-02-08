@@ -19,6 +19,7 @@ import { ProtectedRoute } from "./secure/ProtectedRoutes";
 
 // Components
 import { NotFound } from "./components/NotFound";
+import { GastosGlobales } from "./pages/GastosGlobales/GastosGlobales";
 
 function App() {
     
@@ -41,6 +42,7 @@ function App() {
                         <Route element={<HomePageLayouts />}>
                             <Route path="/" element={ <HomePage /> } />
                             <Route path="/gastos-comunes" element={ <GastosComunesPage /> } />
+                            <Route path="/gastos-globales" element={ <GastosGlobales /> } />
                             <Route path="/anuncios" element={ <AnunciosPage /> } />
                             <Route path="/residentes" element={ <ResidentesPage /> } />
                             <Route path="/documentos" element={ <DocumentosPage /> } />

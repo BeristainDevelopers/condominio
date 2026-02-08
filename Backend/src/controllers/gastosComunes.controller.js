@@ -9,7 +9,6 @@ import { GastoComun } from "../models/GastosComunes.model.js";
 import { enviarMailGastoComun } from "../services/email.services.js";
 import { Residente } from "../models/Residentes.model.js";
 import { sequelize } from "../database/database.js";
-import fs from "fs";
 
 const __dirname = getCurrentDirectory(fileURLToPath(import.meta.url));
 
@@ -22,7 +21,8 @@ export const generarGastosComunes = async (req, res, next) => {
         const dia = fechaArray[2];
         console.log(fechaArray);
         console.log(mes);
-
+        console.log(req.body);
+        return
         const mesesNombres = {
             1: "Enero",
             2: "Febrero",

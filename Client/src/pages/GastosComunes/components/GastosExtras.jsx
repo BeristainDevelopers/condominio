@@ -15,9 +15,11 @@ export const GastosExtras = ({
     gastoComun,
     fondoReserva,
     fecha,
+    fechaVencimiento,
 }) => {
     const [nombre, setNombre] = useState("");
     const [monto, setMonto] = useState("");
+    const [nota, setNota] = useState("");
     const [casas, setCasas] = useState([]);
     const [aplicarATodos, setAplicarATodos] = useState(false);
     const [gastos, setGastos] = useState([]);
@@ -56,7 +58,7 @@ export const GastosExtras = ({
         setNombre("");
         setMonto("");
         setCasas([]);
-        setAplicarATodos(false);
+        setAplicarATodos(false);       
     };
 
     const handleClick = async () => {
@@ -65,6 +67,8 @@ export const GastosExtras = ({
             const formData = new FormData();
             formData.append("gasto_comun", gastoComun);
             formData.append("fecha", fecha);
+            formData.append("nota", nota);
+            formData.append("fecha_vencimiento", fechaVencimiento);
             formData.append("fondo_reserva", fondoReserva);
             formData.append("gastos_extras", JSON.stringify(gastos));
 
@@ -246,8 +250,8 @@ export const GastosExtras = ({
                 <textarea
                     className="w-full h-[150px] p-2 border border-gray-300 rounded font-medium text-gray-600"
                     style={{ resize: 'none' }}
-                    /* value={nota}
-                    onChange={(e) => setNota(e.target.value)} */
+                    value={nota}
+                    onChange={(e) => setNota(e.target.value)}
                     placeholder="Escribe una nota aquí..."
                 />
             </div>

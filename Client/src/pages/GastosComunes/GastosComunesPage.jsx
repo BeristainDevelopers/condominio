@@ -11,6 +11,7 @@ export const GastosComunesPage = () => {
     const [todasLasCasas, setTodasLasCasas] = useState([])
     const [gastoComun, setGastoComun] = useState("")
     const [fecha, setFecha] = useState("")
+    const [fechaVencimiento, setFechaVencimiento] = useState("")
     const [fondoReserva, setFondoReserva] = useState("")
 
     const siguiente = () => setPestañaActual((prev) => prev + 1);
@@ -36,7 +37,7 @@ export const GastosComunesPage = () => {
     const renderTab = () => {
         switch (pestañaActual) {
             case 0:
-                return <GastosFijos siguiente={siguiente} setGastoComun={setGastoComun} setFecha={setFecha} setFondoReserva={setFondoReserva} gastoComun={gastoComun} fondoReserva={fondoReserva} fecha={fecha} />;
+                return <GastosFijos siguiente={siguiente} setGastoComun={setGastoComun} setFecha={setFecha} setFondoReserva={setFondoReserva} gastoComun={gastoComun} fondoReserva={fondoReserva} fecha={fecha} fechaVencimiento={fechaVencimiento} setFechaVencimiento={setFechaVencimiento} />;
             case 1:
                 return todasLasCasas.length > 0 ? (
                 <GastosExtras
@@ -46,6 +47,7 @@ export const GastosComunesPage = () => {
                     gastoComun={gastoComun}
                     fondoReserva={fondoReserva}
                     fecha={fecha}
+                    fechaVencimiento={fechaVencimiento}
                 />
             ) : (
                 <p className="text-center text-gray-600">Cargando casas...</p>

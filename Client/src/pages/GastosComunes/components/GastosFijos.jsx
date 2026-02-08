@@ -8,19 +8,23 @@ export const GastosFijos = ({
     fondoReserva,
     gastoComun,
     setFecha,
-    fecha
+    fecha,
+    setFechaVencimiento,
+    fechaVencimiento
 }) => {
 
     const [error, setError] = useState({
         fecha: false,
+        fechaVencimiento: false,
         gastoComun: false,
         fondoReserva: false,
     });
 
     const handleSiguiente = () => {
-        if (!gastoComun || !fondoReserva || !fecha) {
+        if (!gastoComun || !fondoReserva || !fecha || !fechaVencimiento) {
             setError({
                 fecha: !fecha,
+                fechaVencimiento: !fechaVencimiento,
                 gastoComun: !gastoComun, 
                 fondoReserva: !fondoReserva,
             });
@@ -29,7 +33,7 @@ export const GastosFijos = ({
         siguiente();
     };
 
-    const isDirty = gastoComun && fondoReserva && fecha;
+    const isDirty = gastoComun && fondoReserva && fecha && fechaVencimiento;
 
     return (
         <div className="p-6 bg-white rounded shadow space-y-6 border border-gray-100">
@@ -39,7 +43,7 @@ export const GastosFijos = ({
 
             <div>
                 <label className="block mb-1 font-medium text-gray-600">
-                    Fecha
+                    Fecha Gastos Comunes
                 </label>
                 <input
                     type="date"
@@ -51,6 +55,23 @@ export const GastosFijos = ({
                 {error.fecha && (
                     <p className="text-red-500 text-sm mt-1 font-bold">
                         La fecha es obligatoria.
+                    </p>
+                )}
+            </div>
+            <div>
+                <label className="block mb-1 font-medium text-gray-600">
+                    Fecha Vencimiento Gastos Comunes
+                </label>
+                <input
+                    type="date"
+                    className="w-full p-2 border border-gray-300 rounded"
+                    value={fechaVencimiento}
+                    onChange={(e) => setFechaVencimiento(e.target.value)}
+
+                />
+                {error.fechaVencimiento && (
+                    <p className="text-red-500 text-sm mt-1 font-bold">
+                        La fecha De Vencimiento es obligatoria.
                     </p>
                 )}
             </div>
