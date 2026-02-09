@@ -226,7 +226,7 @@ export const generarInformGlobal = async (req, res, next) => {
 
         const rutaRelativa = path.join(
             "upload",
-            `informe-global.pdf`,
+            `informe-global.pdf`
         );
         const rutaAbsoluta = path.join(__dirname, "../", rutaRelativa);
 

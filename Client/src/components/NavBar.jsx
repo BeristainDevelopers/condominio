@@ -37,7 +37,7 @@ export const Navbar = () => {
                     </li>
                     <li>
                         <Link to="/gastos-globales" className={`text-lg transition-all duration-300 ${location.pathname.startsWith("/gastos-globales") ? "text-indigo-700 font-bold text-xl" : "text-gray-700 font-semibold hover:text-gray-400"}`}>
-                            <AiOutlineGlobal className="inline-block mb-1 mr-1" />Gastos-Comunes
+                            <AiOutlineGlobal className="inline-block mb-1 mr-1" />Gastos-Globales
                         </Link>
                     </li>
                     <li>
