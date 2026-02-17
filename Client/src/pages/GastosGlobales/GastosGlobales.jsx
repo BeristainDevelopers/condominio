@@ -7,8 +7,16 @@ import { ResumenMes } from "./components/ResumenMes";
 import { SaldoCuentaCorriente } from "./components/SaldoCuentaCorriente";
 import { LoadSpinner } from "../../components/ui/loadSpinner";
 import { motion } from "framer-motion";
+import { IngresoFondoReserva } from "./components/IngresoFondoReserva";
+import { ResumenGlobal } from "./components/ResumenGlobal";
+import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router";
+
 
 export const GastosGlobales = () => {
+
+    const { enqueueSnackbar } = useSnackbar();
+    const navigate = useNavigate();
     const [step, setStep] = useState(1);
 
     const siguiente = () => setStep((prev) => prev + 1);
@@ -69,7 +77,7 @@ export const GastosGlobales = () => {
                 );
             case 5:
                 return (
-                    <EgresosFondoReserva
+                    <IngresoFondoReserva
                         setGastoGlobal={setGastoGlobal}
                         gastoGlobal={gastoGlobal}
                         volver={volver}
@@ -77,18 +85,102 @@ export const GastosGlobales = () => {
                     />
                 );
             case 6:
-                return <Morosos />;
+                return (
+                    <EgresosFondoReserva
+                        setGastoGlobal={setGastoGlobal}
+                        gastoGlobal={gastoGlobal}
+                        volver={volver}
+                        handleStep={handleStep}
+                    />
+                );
+            case 7:
+                return (
+                    <Morosos
+                        setGastoGlobal={setGastoGlobal}
+                        gastoGlobal={gastoGlobal}
+                        volver={volver}
+                        handleStep={handleStep}
+                    />
+                );
+
+            case 8:
+                return (
+                    <ResumenGlobal
+                        gastoGlobal={gastoGlobal}
+                        saldoCuentaCorriente={saldoCuentaCorriente}
+                        volver={volver}
+                        handleSubmit={handleSubmit}
+                        loading={loading}
+                    />
+                );
             default:
                 return null;
         }
     };
 
     const handleStep = () => {
-        if (step < 5) {
+        if (step < 8) {
             siguiente();
         } else {
             setLoading(true);
             console.log("Proceso finalizado");
+        }
+    };
+
+
+
+    const handleSubmit = async () => {
+        try {
+            setLoading(true);
+            const formData = new FormData();
+
+
+            formData.append("totalIngresosMes", gastoGlobal.totalIngresosMes);
+            formData.append("totalEgresosMes", gastoGlobal.totalEgresosMes);
+            formData.append("superavitMes", gastoGlobal.superavitMes);
+
+
+            formData.append("listaIngresos", JSON.stringify(gastoGlobal.listaIngresos));
+            formData.append("listaEgresos", JSON.stringify(gastoGlobal.listaEgresos));
+            formData.append("listaIngresosFondoReserva", JSON.stringify(gastoGlobal.listaIngresosFondoReserva));
+            formData.append("listaEgresosFondoReserva", JSON.stringify(gastoGlobal.listaEgresosFondoReserva));
+            formData.append("resitentesMorosos", JSON.stringify(gastoGlobal.resitentesMorosos));
+
+            formData.append("totalIngresosFondoReserva", gastoGlobal.totalIngresosFondoReserva);
+            formData.append("totalEgresosFondoReserva", gastoGlobal.totalEgresosFondoReserva);
+            formData.append("totalMorosos", gastoGlobal.totalMorosos);
+
+
+            formData.append("saldoCuenta", JSON.stringify(saldoCuentaCorriente));
+
+
+            const requestOptions = {
+                method: "POST",
+                body: formData,
+            };
+
+            const URL =
+                import.meta.env.VITE_APP_MODE === "desarrollo"
+                    ? import.meta.env.VITE_URL_DESARROLLO
+                    : import.meta.env.VITE_URL_PRODUCCION;
+
+            const response = await fetch(
+                `${URL}/api/v1/gastos-comunes/generar-informe-global`,
+                requestOptions,
+            );
+            const data = await response.json();
+
+            if (data.code === 201) {
+                enqueueSnackbar(data.message, { variant: "success" });
+                await wait(2000);
+                navigate("/");
+                setLoading(false);
+            } else {
+                enqueueSnackbar(data.message, { variant: "error" });
+                setLoading(false);
+            }
+        } catch (error) {
+            console.log(error);
         }
     };
 

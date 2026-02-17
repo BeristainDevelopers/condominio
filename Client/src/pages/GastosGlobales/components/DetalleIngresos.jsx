@@ -5,14 +5,17 @@ export const DetalleIngresos = ({
     setGastoGlobal,
     volver,
     handleStep,
+    gastoGlobal,
 }) => {
-    const [ingresos, setIngresos] = useState({
-        gastosComunes: "",
-        estacionamientos: "",
-        gastosMorosos: "",
-    });
+    const ingresos = gastoGlobal.listaIngresos;
 
     const [totalIngresos, setTotalIngresos] = useState("");
+
+    const ingresosFijos = [
+        "gastos_comunes",
+        "estacionamientos",
+        "gastos_morosos",
+    ];
 
     const [nuevoIngreso, setNuevoIngreso] = useState({
         key: "",
@@ -21,9 +24,12 @@ export const DetalleIngresos = ({
 
     const handleChangeIngreso = (key, value) => {
         if (value === "" || soloNumeros(value)) {
-            setIngresos((prev) => ({
+            setGastoGlobal((prev) => ({
                 ...prev,
-                [key]: value,
+                listaIngresos: {
+                    ...prev.listaIngresos,
+                    [key]: value,
+                },
             }));
         }
     };
@@ -34,31 +40,42 @@ export const DetalleIngresos = ({
 
         const safeKey = key.trim().replace(/\s+/g, "_").toLowerCase();
 
-        setIngresos((prev) => ({
+        setGastoGlobal((prev) => ({
             ...prev,
-            [safeKey]: Number(value),
+            listaIngresos: {
+                ...prev.listaIngresos,
+                [safeKey]: Number(value),
+            },
         }));
 
         setNuevoIngreso({ key: "", value: "" });
     };
 
-    const handleAvanzar = () => {
-        setIngresos((prev) => ({
-            ...prev,
-            totalIngresos: totalIngresos,
-        }));
+    const eliminarIngreso = (key) => {
+        setGastoGlobal((prev) => {
+            const copia = { ...prev.listaIngresos };
+            delete copia[key];
 
+            return {
+                ...prev,
+                listaIngresos: copia,
+            };
+        });
+    };
+
+    const handleAvanzar = () => {
         setGastoGlobal((prev) => ({
             ...prev,
             listaIngresos: ingresos,
         }));
+
         handleStep();
     };
 
     const isDirty =
-        ingresos.gastosComunes &&
+        ingresos.gastos_comunes &&
         ingresos.estacionamientos &&
-        ingresos.gastosMorosos;
+        ingresos.gastos_morosos;
 
     useEffect(() => {
         const total = Object.values(ingresos)
@@ -79,9 +96,9 @@ export const DetalleIngresos = ({
                 </label>
                 <input
                     className="w-full p-2 border border-gray-300 rounded"
-                    value={ingresos.gastosComunes}
+                    value={ingresos.gastos_comunes}
                     onChange={(e) => {
-                        handleChangeIngreso("gastosComunes", e.target.value);
+                        handleChangeIngreso("gastos_comunes", e.target.value);
                     }}
                     placeholder="Ej: 25000"
                     inputMode="numeric"
@@ -90,7 +107,7 @@ export const DetalleIngresos = ({
 
             <div>
                 <label className="block mb-1 font-medium text-gray-600">
-                    Ingresos Gastos Comunes
+                    Ingresos Por Estacionamientos
                 </label>
                 <input
                     className="w-full p-2 border border-gray-300 rounded"
@@ -105,13 +122,13 @@ export const DetalleIngresos = ({
 
             <div>
                 <label className="block mb-1 font-medium text-gray-600">
-                    Ingresos Gastos Comunes
+                    Ingresos Gastos Comunes Atrasados
                 </label>
                 <input
                     className="w-full p-2 border border-gray-300 rounded"
-                    value={ingresos.gastosMorosos}
+                    value={ingresos.gastos_morosos}
                     onChange={(e) =>
-                        handleChangeIngreso("gastosMorosos", e.target.value)
+                        handleChangeIngreso("gastos_morosos", e.target.value)
                     }
                     placeholder="Ej: 25000"
                     inputMode="numeric"
@@ -164,17 +181,39 @@ export const DetalleIngresos = ({
                     Resumen de ingresos
                 </h3>
 
-                {Object.entries(ingresos).map(([key, value]) => (
-                    <div
-                        key={key}
-                        className="flex justify-between bg-gray-100 p-2 rounded text-sm"
-                    >
-                        <span>{key}</span>
-                        <span>
-                            ${Number(value || 0).toLocaleString("es-CL")}
-                        </span>
-                    </div>
-                ))}
+                {Object.entries(ingresos).map(([key, value]) => {
+                    const esFijo = ingresosFijos.includes(key);
+
+                    return (
+                        <div
+                            key={key}
+                            className="flex justify-between items-center bg-gray-100 p-2 rounded text-sm"
+                        >
+                            <span>
+                                {key
+                                    .replaceAll("_", " ")
+                                    .replace(/\b\w/g, (c) => c.toUpperCase())}
+                            </span>
+
+                            <div className="flex items-center gap-3">
+                                <span>
+                                    $
+                                    {Number(value || 0).toLocaleString("es-CL")}
+                                </span>
+
+                                {!esFijo && (
+                                    <button
+                                        onClick={() => eliminarIngreso(key)}
+                                        className="text-red-500 hover:text-red-700 font-bold"
+                                        title="Eliminar ingreso"
+                                    >
+                                        ✕
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
 
             <div>

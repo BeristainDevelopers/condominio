@@ -1,112 +1,49 @@
-const datos = {
-    mes: "Febrero de 2025",
-
-    resumenMes: {
-        ingresos: 4601868,
-        egresos: 3002252,
-        resultado: 1599616,
-    },
-
-    saldosCuenta: [
-        { fecha: "31.12.2024", monto: 15305280 },
-        { fecha: "31.01.2025", monto: 12735002 },
-        { fecha: "28.02.2025", monto: 9810254 },
-    ],
-
-    ingresosMes: [
-        { concepto: "Ingresos gastos comunes del mes", monto: 2959014 },
-        {
-            concepto: "Ingresos por gastos comunes de meses anteriores",
-            monto: 631156,
-        },
-        { concepto: "Ingresos por estacionamientos", monto: 266698 },
-    ],
-
-    egresosMes: {
-        administracion: [
-            {
-                concepto: "Total Remuneraciones (Haberes)",
-                comprobante: "Liquidación remuneraciones",
-                monto: 1853021,
-            },
-            {
-                concepto: "Cotizaciones de Previsión",
-                comprobante: "Planillas cotizaciones",
-                monto: 174145,
-            },
-        ],
-        consumo: [
-            {
-                concepto: "Consumo electricidad (ENEL)",
-                comprobante: "BE 338719937",
-                monto: 69078,
-            },
-        ],
-        otros: [
-            { concepto: "Jardinero", comprobante: "V 39", monto: 120000 },
-            {
-                concepto: "José Fuentes Martínez",
-                comprobante: "BH 6",
-                monto: 372000,
-            },
-        ],
-    },
-
-    fondoReserva: {
-        ingresos: [
-            { concepto: "Ingresos en el mes", monto: 270090 },
-            { concepto: "Estacionamientos", monto: 266698 },
-        ],
-        egresos: [
-            {
-                concepto: "Cambio Sistema Eléctrico Garita",
-                comprobante: "V 41",
-                monto: 567000,
-            },
-        ],
-    },
-
-    atrasos: [
-        { casa: "N", residente: "Elena Guerra", monto: 338582 },
-        { casa: "1058", residente: "Mónica Garcés", monto: 378143 },
-    ],
-};
-
-
 export const generarTemplateInformeGlobalPDF = (datos) => {
+    const fmt = (v) => `$ ${v.toLocaleString("es-CL")}`;
 
-  const fmt = v => `$ ${v.toLocaleString("es-CL")}`;
-
-  const filasResumen = `
+    const filasResumen = `
     <tr><td>Total Ingresos del Mes</td><td class="right">${fmt(datos.resumenMes.ingresos)}</td></tr>
     <tr><td>Total Egresos del Mes</td><td class="right">${fmt(datos.resumenMes.egresos)}</td></tr>
     <tr class="bold"><td>Resultado del Mes</td><td class="right">${fmt(datos.resumenMes.resultado)}</td></tr>
   `;
 
-  const filasSaldos = datos.saldosCuenta.map(s =>
-    `<tr><td>Saldo en Cuenta Corriente al ${s.fecha}</td><td class="right">${fmt(s.monto)}</td></tr>`
-  ).join("");
+    const filasSaldos = datos.saldosCuenta
+        .map(
+            (s) =>
+                `<tr><td>Saldo en Cuenta Corriente al ${s.fecha}</td><td class="right">${fmt(s.monto)}</td></tr>`,
+        )
+        .join("");
 
-  const filasIngresos = datos.ingresosMes.map(i =>
-    `<tr><td>${i.concepto}</td><td class="right">${fmt(i.monto)}</td></tr>`
-  ).join("");
+    const filasIngresos = datos.ingresosMes
+        .map(
+            (i) =>
+                `<tr><td>${i.concepto}</td><td class="right">${fmt(i.monto)}</td></tr>`,
+        )
+        .join("");
 
-  const filasEgresos = (titulo, items) => `
+    const filasEgresos = (titulo, items) => `
     <tr class="section"><td colspan="3">${titulo}</td></tr>
-    ${items.map(e => `
+    ${items
+        .map(
+            (e) => `
       <tr>
         <td>${e.concepto}</td>
         <td>${e.comprobante || ""}</td>
         <td class="right">${fmt(e.monto)}</td>
       </tr>
-    `).join("")}
+    `,
+        )
+        .join("")}
   `;
 
-  const filasAtrasos = datos.atrasos.map(a =>
-    `<tr><td>${a.casa}</td><td>${a.residente}</td><td class="right">${fmt(a.monto)}</td></tr>`
-  ).join("");
+    const filasAtrasos = datos.atrasos
+        .map(
+            (a) =>
+                `<tr><td>${a.casa}</td><td>${a.residente}</td><td class="right">${fmt(a.monto)}</td></tr>`,
+        )
+        .join("");
 
-  return `
+    return `
 <!DOCTYPE html>
 <html lang="es">
 <head>

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { soloNumeros } from "../../../utils/validators";
 
-export const EgresosFondoReserva = ({ gastoGlobal, setGastoGlobal, volver, handleStep }) => {
+export const IngresoFondoReserva = ({ setGastoGlobal, volver, handleStep, gastoGlobal }) => {
 
-    const egresos = gastoGlobal.listaEgresosFondoReserva || {};
+    const ingresos = gastoGlobal.listaIngresosFondoReserva || {};
 
     const [total, setTotal] = useState(0);
 
@@ -13,16 +13,18 @@ export const EgresosFondoReserva = ({ gastoGlobal, setGastoGlobal, volver, handl
         monto: ""
     });
 
+    const ingresosFijos = ["ingresos_mes", "estacionamientos"];
+
 
     const handleChange = (key, field, value) => {
         if (field === "monto" && value !== "" && !soloNumeros(value)) return;
 
         setGastoGlobal(prev => ({
             ...prev,
-            listaEgresosFondoReserva: {
-                ...prev.listaEgresosFondoReserva,
+            listaIngresosFondoReserva: {
+                ...prev.listaIngresosFondoReserva,
                 [key]: {
-                    ...prev.listaEgresosFondoReserva[key],
+                    ...prev.listaIngresosFondoReserva[key],
                     [field]: value
                 }
             }
@@ -38,8 +40,8 @@ export const EgresosFondoReserva = ({ gastoGlobal, setGastoGlobal, volver, handl
 
         setGastoGlobal(prev => ({
             ...prev,
-            listaEgresosFondoReserva: {
-                ...prev.listaEgresosFondoReserva,
+            listaIngresosFondoReserva: {
+                ...prev.listaIngresosFondoReserva,
                 [safeKey]: {
                     comprobante,
                     monto: Number(monto)
@@ -53,30 +55,32 @@ export const EgresosFondoReserva = ({ gastoGlobal, setGastoGlobal, volver, handl
 
     const eliminar = (key) => {
         setGastoGlobal(prev => {
-            const copia = { ...prev.listaEgresosFondoReserva };
+            const copia = { ...prev.listaIngresosFondoReserva };
             delete copia[key];
 
             return {
                 ...prev,
-                listaEgresosFondoReserva: copia
+                listaIngresosFondoReserva: copia
             };
         });
     };
 
 
     useEffect(() => {
-        const suma = Object.values(egresos)
+        const suma = Object.values(ingresos)
             .filter(v => v?.monto && !isNaN(v.monto))
             .reduce((acc, v) => acc + Number(v.monto), 0);
 
         setTotal(suma);
-    }, [egresos]);
+    }, [ingresos]);
 
+
+    const isDirty = ingresos.ingresos_mes && ingresos.estacionamientos;
 
     const handleAvanzar = () => {
         setGastoGlobal(prev => ({
             ...prev,
-            totalEgresosFondoReserva: total
+            totalIngresosFondoReserva: total
         }));
         handleStep();
     };
@@ -85,12 +89,41 @@ export const EgresosFondoReserva = ({ gastoGlobal, setGastoGlobal, volver, handl
         <div className="p-6 bg-white rounded shadow space-y-6 border border-gray-100">
 
             <h2 className="text-xl font-bold text-gray-700">
-                Egresos Fondo de Reserva
+                Ingresos Fondo de Reserva
             </h2>
 
+            {/* FIJOS */}
+            {[
+                { key: "ingresos_mes", label: "Ingresos en el mes" },
+                { key: "estacionamientos", label: "Estacionamientos" }
+            ].map(({ key, label }) => (
+                <div key={key}>
+                    <label className="block mb-1 font-medium text-gray-600">
+                        {label}
+                    </label>
+
+                    <div className="grid grid-cols-2 gap-2">
+                        <input
+                            className="p-2 border rounded"
+                            placeholder="Comprobante"
+                            value={ingresos[key]?.comprobante || ""}
+                            onChange={(e)=>handleChange(key,"comprobante",e.target.value)}
+                        />
+
+                        <input
+                            className="p-2 border rounded"
+                            placeholder="Monto"
+                            inputMode="numeric"
+                            value={ingresos[key]?.monto || ""}
+                            onChange={(e)=>handleChange(key,"monto",e.target.value)}
+                        />
+                    </div>
+                </div>
+            ))}
+
             {/* AGREGAR */}
-            <div className="space-y-2">
-                <h3 className="font-semibold text-gray-600">Agregar egreso</h3>
+            <div className="border-t pt-4 space-y-2">
+                <h3 className="font-semibold text-gray-600">Agregar ingreso</h3>
 
                 <input
                     className="w-full p-2 border rounded"
@@ -122,7 +155,7 @@ export const EgresosFondoReserva = ({ gastoGlobal, setGastoGlobal, volver, handl
                     onClick={agregar}
                     className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800"
                 >
-                    Agregar egreso
+                    Agregar ingreso
                 </button>
             </div>
 
@@ -130,36 +163,36 @@ export const EgresosFondoReserva = ({ gastoGlobal, setGastoGlobal, volver, handl
             <div className="space-y-2">
                 <h3 className="font-semibold text-gray-600">Resumen</h3>
 
-                {Object.entries(egresos).length === 0 && (
-                    <div className="text-gray-400 text-sm">
-                        No hay egresos registrados
-                    </div>
-                )}
+                {Object.entries(ingresos).map(([key, value])=>{
+                    const esFijo = ingresosFijos.includes(key);
 
-                {Object.entries(egresos).map(([key, value]) => (
-                    <div key={key} className="flex justify-between items-center bg-gray-100 p-2 rounded text-sm">
-                        <span>
-                            {key.replaceAll("_"," ").replace(/\b\w/g,c=>c.toUpperCase())}
-                        </span>
+                    return (
+                        <div key={key} className="flex justify-between items-center bg-gray-100 p-2 rounded text-sm">
+                            <span>
+                                {key.replaceAll("_"," ").replace(/\b\w/g,c=>c.toUpperCase())}
+                            </span>
 
-                        <div className="flex gap-3 items-center">
-                            <span>${Number(value?.monto||0).toLocaleString("es-CL")}</span>
+                            <div className="flex gap-3 items-center">
+                                <span>${Number(value?.monto||0).toLocaleString("es-CL")}</span>
 
-                            <button
-                                onClick={()=>eliminar(key)}
-                                className="text-red-500 hover:text-red-700 font-bold"
-                            >
-                                ✕
-                            </button>
+                                {!esFijo && (
+                                    <button
+                                        onClick={()=>eliminar(key)}
+                                        className="text-red-500 hover:text-red-700 font-bold"
+                                    >
+                                        ✕
+                                    </button>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    )
+                })}
             </div>
 
             {/* TOTAL */}
             <div>
                 <label className="block mb-1 font-medium text-gray-600">
-                    Total Egresos Fondo Reserva
+                    Total Ingresos Fondo Reserva
                 </label>
                 <input
                     className="w-full p-2 border rounded bg-gray-100"
@@ -179,7 +212,8 @@ export const EgresosFondoReserva = ({ gastoGlobal, setGastoGlobal, volver, handl
 
                 <button
                     onClick={handleAvanzar}
-                    className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-800"
+                    disabled={!isDirty}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-800 disabled:opacity-50"
                 >
                     Siguiente
                 </button>

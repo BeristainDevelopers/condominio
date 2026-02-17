@@ -17,12 +17,9 @@ export const generarGastosComunes = async (req, res, next) => {
         const { fondo_reserva, gasto_comun, gastos_extras, fecha } = req.body;
         const fechaArray = fecha.split("-");
         const year = fechaArray[0];
-        const mes = Number(fechaArray[1])
+        const mes = Number(fechaArray[1]);
         const dia = fechaArray[2];
-        console.log(fechaArray);
-        console.log(mes);
-        console.log(req.body);
-        return
+
         const mesesNombres = {
             1: "Enero",
             2: "Febrero",
@@ -144,90 +141,81 @@ export const generarGastosComunes = async (req, res, next) => {
 
 export const generarInformGlobal = async (req, res, next) => {
     try {
+        const body = req.body;
+
+        const listaIngresos = JSON.parse(body.listaIngresos || "{}");
+        const listaEgresos = JSON.parse(body.listaEgresos || "{}");
+        const listaIngresosFondoReserva = JSON.parse(
+            body.listaIngresosFondoReserva || "{}",
+        );
+        const listaEgresosFondoReserva = JSON.parse(
+            body.listaEgresosFondoReserva || "{}",
+        );
+        const morosos = JSON.parse(body.resitentesMorosos || "{}");
+        const saldoCuenta = JSON.parse(body.saldoCuenta || "{}");
+
+        const objToArrayMonto = (obj) =>
+            Object.entries(obj || {}).map(([k, v]) => ({
+                concepto: k.replaceAll("_", " "),
+                monto: Number(v),
+            }));
+
+        const objToArrayComprobante = (obj) =>
+            Object.entries(obj || {}).map(([k, v]) => ({
+                concepto: k.replaceAll("_", " "),
+                comprobante: v?.comprobante || "",
+                monto: Number(v?.monto || 0),
+            }));
+
+        const morososToArray = (obj) =>
+            Object.values(obj || {}).map((v) => ({
+                casa: v.casa,
+                residente: v.residente,
+                monto: Number(v.monto || 0),
+            }));
+
         const datos = {
-            mes: "Febrero de 2025",
+            mes: new Date().toLocaleDateString("es-CL", {
+                month: "long",
+                year: "numeric",
+            }),
 
             resumenMes: {
-                ingresos: 4601868,
-                egresos: 3002252,
-                resultado: 1599616,
+                ingresos: Number(body.totalIngresosMes || 0),
+                egresos: Number(body.totalEgresosMes || 0),
+                resultado:
+                    Number(body.totalIngresosMes || 0) -
+                    Number(body.totalEgresosMes || 0),
             },
 
             saldosCuenta: [
-                { fecha: "31.12.2024", monto: 15305280 },
-                { fecha: "31.01.2025", monto: 12735002 },
-                { fecha: "28.02.2025", monto: 9810254 },
+                {
+                    fecha: "-",
+                    monto: Number(saldoCuenta.saldoAnteAnterior || 0),
+                },
+                { fecha: "-", monto: Number(saldoCuenta.saldoAnterior || 0) },
+                { fecha: "-", monto: Number(saldoCuenta.saldoActual || 0) },
             ],
 
-            ingresosMes: [
-                { concepto: "Ingresos gastos comunes del mes", monto: 2959014 },
-                {
-                    concepto: "Ingresos por gastos comunes de meses anteriores",
-                    monto: 631156,
-                },
-                { concepto: "Ingresos por estacionamientos", monto: 266698 },
-            ],
+            ingresosMes: objToArrayMonto(listaIngresos),
 
             egresosMes: {
-                administracion: [
-                    {
-                        concepto: "Total Remuneraciones (Haberes)",
-                        comprobante: "Liquidación remuneraciones",
-                        monto: 1853021,
-                    },
-                    {
-                        concepto: "Cotizaciones de Previsión",
-                        comprobante: "Planillas cotizaciones",
-                        monto: 174145,
-                    },
-                ],
-                consumo: [
-                    {
-                        concepto: "Consumo electricidad (ENEL)",
-                        comprobante: "BE 338719937",
-                        monto: 69078,
-                    },
-                ],
-                otros: [
-                    {
-                        concepto: "Jardinero",
-                        comprobante: "V 39",
-                        monto: 120000,
-                    },
-                    {
-                        concepto: "José Fuentes Martínez",
-                        comprobante: "BH 6",
-                        monto: 372000,
-                    },
-                ],
+                administracion: objToArrayComprobante(listaEgresos),
+                consumo: [],
+                otros: [],
             },
 
             fondoReserva: {
-                ingresos: [
-                    { concepto: "Ingresos en el mes", monto: 270090 },
-                    { concepto: "Estacionamientos", monto: 266698 },
-                ],
-                egresos: [
-                    {
-                        concepto: "Cambio Sistema Eléctrico Garita",
-                        comprobante: "V 41",
-                        monto: 567000,
-                    },
-                ],
+                ingresos: objToArrayComprobante(listaIngresosFondoReserva),
+                egresos: objToArrayComprobante(listaEgresosFondoReserva),
             },
 
-            atrasos: [
-                { casa: "N", residente: "Elena Guerra", monto: 338582 },
-                { casa: "1058", residente: "Mónica Garcés", monto: 378143 },
-            ],
+            atrasos: morososToArray(morosos),
         };
 
         const html = generarTemplateInformeGlobalPDF(datos);
 
-        const rutaRelativa = path.join(
-            "upload",
-            `informe-global.pdf`
-        );
+        const rutaRelativa = path.join("upload", `informe-global.pdf`);
         const rutaAbsoluta = path.join(__dirname, "../", rutaRelativa);
 
         await generarPDF(html, rutaAbsoluta);
