@@ -107,6 +107,11 @@ export const generarGastosComunes = async (req, res, next) => {
                 },
             });
 
+            if (!residente) {
+                console.warn(`No se encontró representante para la casa ${casa.casa_id}. Se omite el envío de correo y registro de gasto común para esta casa.`);
+                continue;
+            }
+
             const { nombre, apellido, email } = residente;
             const nombreCompleto = `${nombre} ${apellido}`;
             const asunto = `Gasto Comun Casa ${casa.casa} - ${mesesNombres[mes]} de ${year}`;
