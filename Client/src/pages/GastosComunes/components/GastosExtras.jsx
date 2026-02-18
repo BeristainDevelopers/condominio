@@ -3,7 +3,7 @@ import { soloNumeros } from "../../../utils/validators";
 import Select from "react-select";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router";
-import { LoadSpinner } from "../../../components/ui/loadSpinner";
+import { ChargeModal } from "../../../components/ui/ChargeModal";
 import { wait } from "../../../utils/formatTime";
 
 // Icons
@@ -24,6 +24,9 @@ export const GastosExtras = ({
     const [aplicarATodos, setAplicarATodos] = useState(false);
     const [gastos, setGastos] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalType, setModalType] = useState("loading");
+    const [modalMessage, setModalMessage] = useState("");
     const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
 
@@ -64,6 +67,10 @@ export const GastosExtras = ({
     const handleClick = async () => {
         try {
             setLoading(true);
+            setModalType("loading");
+            setModalMessage("Generando, por favor espera...");
+            setModalOpen(true);
+
             const formData = new FormData();
             formData.append("gasto_comun", gastoComun);
             formData.append("fecha", fecha);
@@ -89,15 +96,22 @@ export const GastosExtras = ({
             const data = await response.json();
 
             if (data.code === 201) {
-                enqueueSnackbar(data.message, { variant: "success" });
-                await wait(2000)
-                navigate("/");
+                /* enqueueSnackbar(data.message, { variant: "success" }); */
+                setModalType("success");
+                setModalMessage("¡Enviado con éxito!");
                 setLoading(false);
+                setTimeout(() => {
+                    setModalOpen(false);
+                    navigate("/");
+                }, 1800);
             } else {
                 enqueueSnackbar(data.message, { variant: "error" });
+                setModalOpen(false);
                 setLoading(false);
             }
         } catch (error) {
+            setModalOpen(false);
+            setLoading(false);
             console.log(error);
         }
     };
@@ -269,21 +283,14 @@ export const GastosExtras = ({
                     className="bg-indigo-600 flex gap-2 justify-center items-center text-white px-4 py-2 rounded transition-colors duration-300 cursor-pointer hover:bg-indigo-800"
                     disabled={loading}
                 >
-                    {loading ? (
-                        <>
-                        <LoadSpinner
-                            size="10px"
-                            height="h-2"
-                            color="text-white"
-                        /> 
-                        Generando
-                        </>
-                    ) : (
-                        <>
-                            Finalizar
-                        </>
-                    )}
+                    Finalizar
                 </button>
+                    {/* Modal de carga y éxito */}
+                    <ChargeModal
+                        open={modalOpen}
+                        message={modalMessage}
+                        type={modalType}
+                    />
             </div>
         </div>
     );

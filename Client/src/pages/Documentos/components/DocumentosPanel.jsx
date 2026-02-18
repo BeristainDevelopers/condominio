@@ -22,7 +22,7 @@ const mesesNombres = {
 };
 
 
-export const DocumentosPanel = ({setPdfSeleccionado, setRutaPdf}) => {
+export const DocumentosPanel = ({ setPdfSeleccionado, setRutaPdf }) => {
     const [casa, setCasa] = useState("");
     const [mes, setMes] = useState("");
     const [año, setAño] = useState("");
@@ -31,9 +31,10 @@ export const DocumentosPanel = ({setPdfSeleccionado, setRutaPdf}) => {
         meses: [],
         years: []
     });
-    const [casasDisponibles, setCasasDisponibles ] = useState([])
+    const [casasDisponibles, setCasasDisponibles] = useState([]);
     const [resultados, setResultados] = useState([]);
-
+    const [page, setPage] = useState(1);
+    const itemsPerPage = 10;
 
     const handleBuscar = () => {
         const filtrados = documentos.gastosComunes.filter((doc) => {
@@ -44,16 +45,17 @@ export const DocumentosPanel = ({setPdfSeleccionado, setRutaPdf}) => {
             );
         });
         setResultados(filtrados);
+        setPage(1);
     };
 
-    const handlePdf = (rutaPdf) =>{
+    const handlePdf = (rutaPdf) => {
         try {
-            setPdfSeleccionado(true)
-            setRutaPdf(rutaPdf)
+            setPdfSeleccionado(true);
+            setRutaPdf(rutaPdf);
         } catch (error) {
             console.log(error);
         }
-    }
+    };
 
     const getDocumentos = async () => {
         try {
@@ -93,8 +95,14 @@ export const DocumentosPanel = ({setPdfSeleccionado, setRutaPdf}) => {
 
     useEffect(() => {
         getDocumentos();
-        getCasas()
+        getCasas();
     }, []);
+
+    const totalPages = Math.ceil(resultados.length / itemsPerPage);
+    const paginatedResults = resultados.slice(
+        (page - 1) * itemsPerPage,
+        page * itemsPerPage
+    );
 
     return (
         <div className="pt-20 pb-10 z-0">
@@ -179,10 +187,10 @@ export const DocumentosPanel = ({setPdfSeleccionado, setRutaPdf}) => {
                             <h3 className="font-semibold text-gray-700">
                                 Resultados:
                             </h3>
-                            {resultados.map((doc) => (
+                            {paginatedResults.map((doc) => (
                                 <motion.div
                                     key={doc.id}
-                                    className="flex items-center justify-between p-4 border rounded hover:shadow hover:bg-gray-100 transition-color duration-300"
+                                    className="flex items-center justify-between p-4 border border-gray-100 shadow rounded hover:shadow hover:bg-gray-100 transition-color duration-300"
                                     initial={{ scale: 0.95, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
                                     transition={{ duration: 0.3 }}
@@ -201,24 +209,85 @@ export const DocumentosPanel = ({setPdfSeleccionado, setRutaPdf}) => {
                                     </div>
 
                                     <div className="space-x-1 flex">
-                                        <BotonEnviarMail idGastoComun={doc.id}/>
+                                        <BotonEnviarMail idGastoComun={doc.id} />
                                         <button
-                                        onClick={() =>{ 
-                                            handlePdf(`/${doc.ruta_pdf.replace(/\\/g, "/")}`)
-                                        }}
-                                        className="flex items-center justify-center gap-2 text-sm bg-red-600 text-white font-semibold px-3 py-1 rounded cursor-pointer hover:bg-red-800 transition-colors duration-300 text-[1rem]"
-                                    >
-                                        <FaFilePdf /> Ver PDF 
-                                    </button>
-                                    
+                                            onClick={() => {
+                                                handlePdf(`/${doc.ruta_pdf.replace(/\\/g, "/")}`);
+                                            }}
+                                            className="flex items-center justify-center gap-2 text-sm bg-red-600 text-white font-semibold px-3 py-1 rounded cursor-pointer hover:bg-red-800 transition-colors duration-300 text-[1rem]"
+                                        >
+                                            <FaFilePdf /> Ver PDF
+                                        </button>
                                     </div>
                                 </motion.div>
                             ))}
+
+                            {/* Paginación */}
+                            <div className="flex justify-center mt-6 gap-2">
+                                {(() => {
+                                    const buttons = [];
+                                    if (totalPages <= 6) {
+                                        for (let num = 1; num <= totalPages; num++) {
+                                            buttons.push(
+                                                <button
+                                                    key={num}
+                                                    onClick={() => setPage(num)}
+                                                    className={`px-3 py-1 rounded border font-semibold ${page === num ? "bg-indigo-600 text-white" : "bg-white text-indigo-600 transition cursor-pointer hover:bg-indigo-100"}`}
+                                                >
+                                                    {num}
+                                                </button>
+                                            );
+                                        }
+                                    } else {
+                                        buttons.push(
+                                            <button
+                                                key={1}
+                                                onClick={() => setPage(1)}
+                                                className={`px-3 py-1 rounded border font-semibold ${page === 1 ? "bg-indigo-600 text-white" : "bg-white text-indigo-600 transition cursor-pointer hover:bg-indigo-100"}`}
+                                            >
+                                                1
+                                            </button>
+                                        );
+                                        if (page > 3) {
+                                            buttons.push(
+                                                <span key="dots-start" className="px-2 py-1 text-gray-500 font-bold">...</span>
+                                            );
+                                        }
+                                        let start = Math.max(2, page - 1);
+                                        let end = Math.min(totalPages - 1, page + 1);
+                                        for (let num = start; num <= end; num++) {
+                                            buttons.push(
+                                                <button
+                                                    key={num}
+                                                    onClick={() => setPage(num)}
+                                                    className={`px-3 py-1 rounded border font-semibold ${page === num ? "bg-indigo-600 text-white" : "bg-white text-indigo-600 transition cursor-pointer hover:bg-indigo-100"}`}
+                                                >
+                                                    {num}
+                                                </button>
+                                            );
+                                        }
+                                        if (page < totalPages - 2) {
+                                            buttons.push(
+                                                <span key="dots-end" className="px-2 py-1 text-gray-500 font-bold">...</span>
+                                            );
+                                        }
+                                        buttons.push(
+                                            <button
+                                                key={totalPages}
+                                                onClick={() => setPage(totalPages)}
+                                                className={`px-3 py-1 rounded border font-semibold ${page === totalPages ? "bg-indigo-600 text-white" : "bg-white text-indigo-600 transition cursor-pointer hover:bg-indigo-100"}`}
+                                            >
+                                                {totalPages}
+                                            </button>
+                                        );
+                                    }
+                                    return buttons;
+                                })()}
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>
             </motion.div>
-
         </div>
     );
 };
