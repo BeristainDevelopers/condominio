@@ -9,6 +9,7 @@ import { GastoComun } from "../models/GastosComunes.model.js";
 import { enviarMailGastoComun } from "../services/email.services.js";
 import { Residente } from "../models/Residentes.model.js";
 import { sequelize } from "../database/database.js";
+import { InformeGlobal } from "../models/InformesGlobales.model.js";
 
 const __dirname = getCurrentDirectory(fileURLToPath(import.meta.url));
 
@@ -148,6 +149,11 @@ export const generarInformGlobal = async (req, res, next) => {
     try {
         const body = req.body;
 
+        const now = new Date();
+        const year = now.getFullYear();
+        const mes = now.getMonth() + 1;
+        const mesPad = String(mes).padStart(2, "0");
+
         const listaIngresos = JSON.parse(body.listaIngresos || "{}");
         const listaEgresos = JSON.parse(body.listaEgresos || "{}");
         const listaIngresosFondoReserva = JSON.parse(
@@ -220,7 +226,10 @@ export const generarInformGlobal = async (req, res, next) => {
 
         const html = generarTemplateInformeGlobalPDF(datos);
 
-        const rutaRelativa = path.join("upload", `informe-global.pdf`);
+        const rutaRelativa = path.join(
+            "upload",
+            `informe-global-${year}-${mesPad}-${Date.now()}.pdf`,
+        );
         const rutaAbsoluta = path.join(__dirname, "../", rutaRelativa);
 
         await generarPDF(html, rutaAbsoluta);
@@ -233,12 +242,46 @@ export const generarInformGlobal = async (req, res, next) => {
             "Enero",
             2026,
         );
+
+        await InformeGlobal.create({
+            mes,
+            year,
+            ruta_pdf: rutaRelativa,
+            estado: "generado",
+        });
         return res.status(200).json({
             code: 200,
             message: "Informe global generado exitosamente.",
         });
     } catch (error) {
         console.error("Error al generar informe global:", error);
+        next(error);
+    }
+};
+
+export const getAllInformesGlobales = async (req, res, next) => {
+    try {
+        const informesGlobales = await InformeGlobal.findAll({
+            order: [["createdAt", "DESC"]],
+        });
+
+        const years = await InformeGlobal.findAll({
+            attributes: [
+                [sequelize.fn("DISTINCT", sequelize.col("year")), "year"],
+            ],
+            raw: true,
+        });
+
+        return res.status(200).json({
+            code: 200,
+            message: "informes globales obtenidos exitosamente",
+            data: {
+                informesGlobales,
+                years,
+            },
+        });
+    } catch (error) {
+        console.error("Error al obtener informes globales:", error);
         next(error);
     }
 };

@@ -4,6 +4,7 @@ import { Cargos } from "./Cargos.model.js";
 import { Residente } from "./Residentes.model.js";
 import { Administracion } from "./Administraciones.model.js";
 import { GastoComun } from "./GastosComunes.model.js";
+import { InformeGlobal } from "./InformesGlobales.model.js";
 
 // Casas -> Residentes
 Casas.hasMany(Residente, {
@@ -49,3 +50,5 @@ Administracion.belongsTo(Cargos, {
     foreignKey: "cargo",
     targetKey: "id",
 });
+
+void InformeGlobal;
