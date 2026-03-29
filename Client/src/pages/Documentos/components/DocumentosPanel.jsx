@@ -26,8 +26,10 @@ export const DocumentosPanel = ({ setPdfSeleccionado, setRutaPdf }) => {
     const [casa, setCasa] = useState("");
     const [mes, setMes] = useState("");
     const [año, setAño] = useState("");
+    const [tipoDocumento, setTipoDocumento] = useState("todos");
     const [documentos, setDocumentos] = useState({
         gastosComunes: [],
+        informesGlobales: [],
         meses: [],
         years: []
     });
@@ -37,13 +39,38 @@ export const DocumentosPanel = ({ setPdfSeleccionado, setRutaPdf }) => {
     const itemsPerPage = 10;
 
     const handleBuscar = () => {
-        const filtrados = documentos.gastosComunes.filter((doc) => {
-            return (
-                (!casa || doc.casa == casa) &&
-                (!mes || doc.mes == mes) &&
-                (!año || doc.year == año)
-            );
+        const gastosComunes = (documentos.gastosComunes || []).map((doc) => ({
+            ...doc,
+            __tipo: "gasto_comun",
+        }));
+
+        const informesGlobales = (documentos.informesGlobales || []).map(
+            (doc) => ({
+                ...doc,
+                __tipo: "global",
+            }),
+        );
+
+        const unificados = [...gastosComunes, ...informesGlobales];
+
+        const filtrados = unificados.filter((doc) => {
+            if (tipoDocumento !== "todos" && doc.__tipo !== tipoDocumento) {
+                return false;
+            }
+
+            if (doc.__tipo === "gasto_comun") {
+                return (
+                    (!casa || doc.casa == casa) &&
+                    (!mes || doc.mes == mes) &&
+                    (!año || doc.year == año)
+                );
+            }
+
+            // global
+            if (casa) return false;
+            return (!mes || doc.mes == mes) && (!año || doc.year == año);
         });
+
         setResultados(filtrados);
         setPage(1);
     };
@@ -64,12 +91,28 @@ export const DocumentosPanel = ({ setPdfSeleccionado, setRutaPdf }) => {
                     ? import.meta.env.VITE_URL_DESARROLLO
                     : import.meta.env.VITE_URL_PRODUCCION;
 
-            const response = await fetch(
-                `${URL}/api/v1/gastos-comunes/get-gastos-comunes`
-            );
+            const [responseGastos, responseGlobales] = await Promise.all([
+                fetch(`${URL}/api/v1/gastos-comunes/get-gastos-comunes`),
+                fetch(`${URL}/api/v1/gastos-comunes/get-informes-globales`),
+            ]);
 
-            const data = await response.json();
-            setDocumentos(data.data);
+            const dataGastos = await responseGastos.json();
+            const dataGlobales = await responseGlobales.json();
+
+            const yearsGastos = dataGastos?.data?.years || [];
+            const yearsGlobales = dataGlobales?.data?.years || [];
+            const yearsMap = new Map();
+
+            [...yearsGastos, ...yearsGlobales].forEach((y) => {
+                const yearValue = Number(y.year);
+                if (!Number.isNaN(yearValue)) yearsMap.set(yearValue, { year: yearValue });
+            });
+
+            setDocumentos({
+                ...(dataGastos?.data || {}),
+                informesGlobales: dataGlobales?.data?.informesGlobales || [],
+                years: Array.from(yearsMap.values()).sort((a, b) => b.year - a.year),
+            });
         } catch (error) {
             console.log(error);
         }
@@ -115,6 +158,30 @@ export const DocumentosPanel = ({ setPdfSeleccionado, setRutaPdf }) => {
                 <h2 className="text-2xl font-bold text-indigo-800 text-center">
                     BÚSQUEDA DE DOCUMENTOS
                 </h2>
+
+                <div className="flex flex-wrap gap-2 justify-center">
+                    <button
+                        type="button"
+                        onClick={() => setTipoDocumento("todos")}
+                        className={`px-3 py-1 rounded border font-semibold ${tipoDocumento === "todos" ? "bg-indigo-600 text-white" : "bg-white text-indigo-600 transition cursor-pointer hover:bg-indigo-100"}`}
+                    >
+                        Todos
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setTipoDocumento("gasto_comun")}
+                        className={`px-3 py-1 rounded border font-semibold ${tipoDocumento === "gasto_comun" ? "bg-indigo-600 text-white" : "bg-white text-indigo-600 transition cursor-pointer hover:bg-indigo-100"}`}
+                    >
+                        Gastos Comunes
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setTipoDocumento("global")}
+                        className={`px-3 py-1 rounded border font-semibold ${tipoDocumento === "global" ? "bg-indigo-600 text-white" : "bg-white text-indigo-600 transition cursor-pointer hover:bg-indigo-100"}`}
+                    >
+                        Gastos Globales
+                    </button>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label className="block mb-1 font-semibold text-gray-600">
@@ -124,6 +191,7 @@ export const DocumentosPanel = ({ setPdfSeleccionado, setRutaPdf }) => {
                             value={casa}
                             onChange={(e) => setCasa(e.target.value)}
                             className="w-full p-2 border rounded"
+                            disabled={tipoDocumento === "global"}
                         >
                             <option value="">Todas</option>
                             {casasDisponibles.map((c) => (
@@ -199,17 +267,27 @@ export const DocumentosPanel = ({ setPdfSeleccionado, setRutaPdf }) => {
                                         <FaFilePdf className="text-red-600 text-2xl" />
                                         <div className="flex flex-col">
                                             <span className="font-medium text-gray-800">
-                                                Gastos Comunes
+                                                {doc.__tipo === "global" ? "Gastos Globales" : "Gastos Comunes"}
                                             </span>
                                             <span className="text-sm text-gray-500">
-                                                Casa {doc.gasto_casa?.nombre} - {mesesNombres[doc.mes]}{" "}
-                                                {doc.year}
+                                                {doc.__tipo === "global" ? (
+                                                    <>
+                                                        {mesesNombres[doc.mes]} {doc.year}
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        Casa {doc.gasto_casa?.nombre} - {mesesNombres[doc.mes]}{" "}
+                                                        {doc.year}
+                                                    </>
+                                                )}
                                             </span>
                                         </div>
                                     </div>
 
                                     <div className="space-x-1 flex">
-                                        <BotonEnviarMail idGastoComun={doc.id} />
+                                        {doc.__tipo !== "global" && (
+                                            <BotonEnviarMail idGastoComun={doc.id} />
+                                        )}
                                         <button
                                             onClick={() => {
                                                 handlePdf(`/${doc.ruta_pdf.replace(/\\/g, "/")}`);

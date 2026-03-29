@@ -17,7 +17,7 @@ const Home = () => {
         transition={{ delay: 0.4, duration: 0.8, type: "spring" }}
         className="text-lg md:text-2xl text-gray-700 mb-8 text-center max-w-xl"
       >
-        Gestiona los <span className="font-semibold text-indigo-600">gastos comunes</span> de la comunidad habitacional <span className="font-bold text-indigo-800">Av. Salvador #1050</span> de manera fácil, rápida y segura.
+        Gestiona los <span className="font-semibold text-indigo-600">gastos comunes</span> de la comunidad habitacional <span className="font-bold text-indigo-800"> Salvador 1050</span> de manera fácil, rápida y segura.
       </motion.p>
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
